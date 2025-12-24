@@ -23,14 +23,14 @@ function App() {
           <Route path="/profile" element={<ProfilePage />} />
         </Routes>
 
-        {/* Bottom Navigation */}
+        {/* Bottom Navigation - becomes top nav on large screens */}
         <motion.nav
           initial={{ y: 100 }}
           animate={{ y: 0 }}
-          className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 safe-area-inset-bottom"
+          className="fixed bottom-0 lg:bottom-auto lg:top-0 left-0 right-0 bg-white/95 backdrop-blur-sm border-t lg:border-t-0 lg:border-b border-gray-200 safe-area-inset-bottom z-50"
         >
-          <div className="max-w-md mx-auto px-4">
-            <div className="flex justify-around items-center h-16">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6">
+            <div className="flex justify-around lg:justify-center lg:gap-12 items-center h-16 lg:h-14">
               <NavItem to="/" icon={Home} label="Home" />
               <NavItem to="/lessons" icon={BookOpen} label="Lessons" />
               <NavItem to="/phrases" icon={MessageCircle} label="Phrases" />

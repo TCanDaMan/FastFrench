@@ -3,8 +3,8 @@ import { TrendingUp, Award, Target } from 'lucide-react'
 
 export default function ProgressPage() {
   return (
-    <div className="min-h-screen pb-20 px-4">
-      <div className="max-w-md mx-auto pt-8">
+    <div className="min-h-screen pb-20 lg:pb-8 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md sm:max-w-2xl lg:max-w-4xl mx-auto pt-8 lg:pt-20">
         <motion.h1
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
