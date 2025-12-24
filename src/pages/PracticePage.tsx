@@ -41,7 +41,7 @@ export default function PracticePage() {
   }
 
   const handleCompletePractice = () => {
-    const sessionData = endSession()
+    endSession()
     setShowSessionSummary(true)
   }
 

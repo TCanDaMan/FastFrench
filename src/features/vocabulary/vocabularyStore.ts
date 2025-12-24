@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import type { VocabularyWord, VocabularyCategory, VocabularyStats } from '../../types/vocabulary'
-import { calculateSM2, isDue, isMastered, calculateMastery } from '../../lib/spacedRepetition'
+import { calculateSM2, isDue, isMastered } from '../../lib/spacedRepetition'
 import { initialVocabulary } from '../../data/initialVocabulary'
 
 interface VocabularyState {
