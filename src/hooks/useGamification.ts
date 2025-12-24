@@ -56,10 +56,10 @@ export function useGamification(): UseGamificationReturn {
   ])
 
   const needsSync = useMemo(() => {
-    if (!store.lastSyncDate) return true
-    const hoursSinceSync = (Date.now() - store.lastSyncDate.getTime()) / (1000 * 60 * 60)
+    if (!store.lastSyncedAt) return true
+    const hoursSinceSync = (Date.now() - store.lastSyncedAt.getTime()) / (1000 * 60 * 60)
     return hoursSinceSync > 1
-  }, [store.lastSyncDate])
+  }, [store.lastSyncedAt])
 
   // Initialize daily progress on mount
   useEffect(() => {

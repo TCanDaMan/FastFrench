@@ -1,11 +1,13 @@
 export interface User {
   id: string
-  email: string
-  username: string
+  email?: string
+  username?: string
+  name?: string  // Display name
   level: number
   xp: number
   streak: number
-  createdAt: Date
+  rank?: string  // Current rank (debutant, voyageur, etc.)
+  createdAt?: Date
 }
 
 export interface Lesson {

@@ -4,6 +4,8 @@ import type { User } from '../types'
 import type { Achievement, DailyProgress, LevelUpResult, Rank } from '../types/gamification'
 import { calculateLevel, calculateRank } from './xp'
 import { updateStreak, shouldAwardStreakFreeze } from './streaks'
+import { syncService, type SyncStatus } from './syncService'
+import { debouncedProfileSync, prepareProfileForSync } from './profileSync'
 
 interface GamificationState {
   // User profile
@@ -57,8 +59,14 @@ interface GamificationState {
   }) => void
 
   // Sync status
-  lastSyncDate: Date | null
+  syncStatus: SyncStatus
+  lastSyncedAt: Date | null
   markSynced: () => void
+
+  // Sync actions
+  syncToCloud: () => Promise<void>
+  syncFromCloud: (userId: string) => Promise<void>
+  triggerBackgroundSync: () => void
 }
 
 export const useStore = create<GamificationState>()(
@@ -81,7 +89,8 @@ export const useStore = create<GamificationState>()(
       phrasesPracticed: 0,
       practiceSessions: 0,
       timeSpentMinutes: 0,
-      lastSyncDate: null,
+      syncStatus: 'pending',
+      lastSyncedAt: null,
 
       // User actions
       setUser: (user) => {
@@ -92,6 +101,9 @@ export const useStore = create<GamificationState>()(
             currentLevel: user.level,
             currentStreak: user.streak,
           })
+
+          // Sync from cloud when user logs in
+          get().syncFromCloud(user.id)
         } else {
           set({ user })
         }
@@ -123,6 +135,9 @@ export const useStore = create<GamificationState>()(
             xp_earned: state.todayProgress.xp_earned + xp,
           })
         }
+
+        // Trigger background sync after XP change
+        get().triggerBackgroundSync()
 
         return {
           didLevelUp,
@@ -191,6 +206,9 @@ export const useStore = create<GamificationState>()(
         }
 
         set(updates)
+
+        // Trigger background sync after streak update
+        get().triggerBackgroundSync()
 
         return {
           newStreak: result.newStreak,
@@ -314,10 +332,110 @@ export const useStore = create<GamificationState>()(
 
           get().updateDailyProgress(progressUpdates)
         }
+
+        // Trigger background sync after stats change
+        get().triggerBackgroundSync()
       },
 
       // Sync Management
-      markSynced: () => set({ lastSyncDate: new Date() }),
+      markSynced: () => set({ lastSyncedAt: new Date(), syncStatus: 'synced' }),
+
+      // Trigger background sync (debounced)
+      triggerBackgroundSync: () => {
+        const state = get()
+        if (!state.user?.id) return
+
+        set({ syncStatus: 'pending' })
+
+        const profileData = prepareProfileForSync({
+          totalXp: state.totalXp,
+          currentLevel: state.currentLevel,
+          currentRank: state.currentRank,
+          currentStreak: state.currentStreak,
+          longestStreak: state.longestStreak,
+          streakFreezeAvailable: state.streakFreezeAvailable,
+          lastPracticeDate: state.lastPracticeDate,
+          dailyXpGoal: state.dailyXpGoal,
+          user: state.user,
+        })
+
+        debouncedProfileSync(state.user.id, profileData)
+      },
+
+      // Immediate sync to cloud
+      syncToCloud: async () => {
+        const state = get()
+        if (!state.user?.id) return
+
+        if (!syncService.isOnline()) {
+          set({ syncStatus: 'offline' })
+          return
+        }
+
+        set({ syncStatus: 'syncing' })
+
+        const profileData = prepareProfileForSync({
+          totalXp: state.totalXp,
+          currentLevel: state.currentLevel,
+          currentRank: state.currentRank,
+          currentStreak: state.currentStreak,
+          longestStreak: state.longestStreak,
+          streakFreezeAvailable: state.streakFreezeAvailable,
+          lastPracticeDate: state.lastPracticeDate,
+          dailyXpGoal: state.dailyXpGoal,
+          user: state.user,
+        })
+
+        const result = await syncService.syncToCloud(state.user.id, {
+          profile: profileData,
+          dailyProgress: state.todayProgress || undefined,
+        })
+
+        if (result.success) {
+          set({ syncStatus: 'synced', lastSyncedAt: new Date() })
+        } else {
+          set({ syncStatus: 'error' })
+        }
+      },
+
+      // Sync from cloud (on login)
+      syncFromCloud: async (userId: string) => {
+        if (!syncService.isOnline()) {
+          set({ syncStatus: 'offline' })
+          return
+        }
+
+        set({ syncStatus: 'syncing' })
+
+        const cloudData = await syncService.syncFromCloud(userId)
+
+        if (cloudData) {
+          const updates: Partial<GamificationState> = {}
+
+          // Merge profile data
+          if (cloudData.profile) {
+            updates.totalXp = cloudData.profile.xp
+            updates.currentLevel = cloudData.profile.level
+            if (cloudData.profile.rank) {
+              updates.currentRank = cloudData.profile.rank as Rank
+            }
+            updates.currentStreak = cloudData.profile.streak
+          }
+
+          // Merge daily progress
+          if (cloudData.dailyProgress && cloudData.dailyProgress.length > 0) {
+            const today = cloudData.dailyProgress[0]
+            if (!get().todayProgress || today.xp_earned > get().todayProgress!.xp_earned) {
+              updates.todayProgress = today
+              updates.dailyXp = today.xp_earned
+            }
+          }
+
+          set({ ...updates, syncStatus: 'synced', lastSyncedAt: new Date() })
+        } else {
+          set({ syncStatus: 'error' })
+        }
+      },
     }),
     {
       name: 'fastfrench-storage',
@@ -339,7 +457,8 @@ export const useStore = create<GamificationState>()(
         phrasesPracticed: state.phrasesPracticed,
         practiceSessions: state.practiceSessions,
         timeSpentMinutes: state.timeSpentMinutes,
-        lastSyncDate: state.lastSyncDate,
+        syncStatus: state.syncStatus,
+        lastSyncedAt: state.lastSyncedAt,
       }),
     }
   )
@@ -370,8 +489,14 @@ export const selectDailyProgress = (state: GamificationState) => ({
 })
 
 export const selectNeedsSyncing = (state: GamificationState) => {
-  if (!state.lastSyncDate) return true
+  if (!state.lastSyncedAt) return true
 
-  const hoursSinceSync = (Date.now() - state.lastSyncDate.getTime()) / (1000 * 60 * 60)
+  const hoursSinceSync = (Date.now() - state.lastSyncedAt.getTime()) / (1000 * 60 * 60)
   return hoursSinceSync > 1 // Sync if more than 1 hour since last sync
 }
+
+export const selectSyncStatus = (state: GamificationState) => ({
+  status: state.syncStatus,
+  lastSyncedAt: state.lastSyncedAt,
+  needsSync: selectNeedsSyncing(state),
+})

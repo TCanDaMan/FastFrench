@@ -8,19 +8,26 @@ import ProgressPage from './pages/ProgressPage'
 import ProfilePage from './pages/ProfilePage'
 import PhrasesPage from './pages/PhrasesPage'
 import { PronunciationPage } from './pages/PronunciationPage'
+import LoginPage from './pages/LoginPage'
+import SignUpPage from './pages/SignUpPage'
+import AuthCallbackPage from './pages/AuthCallbackPage'
+import { ProtectedRoute } from './components/ProtectedRoute'
 
 function App() {
   return (
     <BrowserRouter>
       <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-accent-50">
         <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/lessons" element={<LessonsPage />} />
-          <Route path="/phrases" element={<PhrasesPage />} />
-          <Route path="/practice" element={<PracticePage />} />
-          <Route path="/pronunciation" element={<PronunciationPage />} />
-          <Route path="/progress" element={<ProgressPage />} />
-          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignUpPage />} />
+          <Route path="/auth/callback" element={<AuthCallbackPage />} />
+          <Route path="/" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
+          <Route path="/lessons" element={<ProtectedRoute><LessonsPage /></ProtectedRoute>} />
+          <Route path="/phrases" element={<ProtectedRoute><PhrasesPage /></ProtectedRoute>} />
+          <Route path="/practice" element={<ProtectedRoute><PracticePage /></ProtectedRoute>} />
+          <Route path="/pronunciation" element={<ProtectedRoute><PronunciationPage /></ProtectedRoute>} />
+          <Route path="/progress" element={<ProtectedRoute><ProgressPage /></ProtectedRoute>} />
+          <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
         </Routes>
 
         {/* Bottom Navigation - becomes top nav on large screens */}

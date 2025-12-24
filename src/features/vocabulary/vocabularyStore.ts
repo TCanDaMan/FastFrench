@@ -3,6 +3,7 @@ import { persist } from 'zustand/middleware'
 import type { VocabularyWord, VocabularyCategory, VocabularyStats } from '../../types/vocabulary'
 import { calculateSM2, isDue, isMastered } from '../../lib/spacedRepetition'
 import { initialVocabulary } from '../../data/initialVocabulary'
+import { syncService } from '../../lib/syncService'
 
 interface VocabularyState {
   words: VocabularyWord[]
@@ -12,6 +13,7 @@ interface VocabularyState {
     incorrectAnswers: number
     xpEarned: number
   } | null
+  lastSyncedAt: Date | null
 
   // Actions
   initializeWords: () => void
@@ -29,6 +31,10 @@ interface VocabularyState {
   // Session management
   startSession: () => void
   endSession: () => { wordsReviewed: number; correctAnswers: number; incorrectAnswers: number; xpEarned: number } | null
+
+  // Sync management
+  syncToCloud: (userId: string) => Promise<void>
+  syncFromCloud: (userId: string) => Promise<void>
 }
 
 export const useVocabularyStore = create<VocabularyState>()(
@@ -36,6 +42,7 @@ export const useVocabularyStore = create<VocabularyState>()(
     (set, get) => ({
       words: [],
       currentSession: null,
+      lastSyncedAt: null,
 
       initializeWords: () => {
         const { words } = get()
@@ -201,9 +208,45 @@ export const useVocabularyStore = create<VocabularyState>()(
         set({ currentSession: null })
         return currentSession
       },
+
+      // Sync to Supabase
+      syncToCloud: async (userId: string) => {
+        const { words } = get()
+
+        if (!syncService.isOnline() || words.length === 0) {
+          return
+        }
+
+        const result = await syncService.syncVocabularyToCloud(userId, words)
+
+        if (result.success) {
+          set({ lastSyncedAt: new Date() })
+        }
+      },
+
+      // Sync from Supabase
+      syncFromCloud: async (userId: string) => {
+        if (!syncService.isOnline()) {
+          return
+        }
+
+        const cloudWords = await syncService.fetchVocabularyFromCloud(userId)
+
+        if (cloudWords.length > 0) {
+          const localWords = get().words
+          const mergedWords = syncService.mergeVocabulary(localWords, cloudWords)
+
+          set({ words: mergedWords, lastSyncedAt: new Date() })
+        }
+      },
     }),
     {
       name: 'vocabulary-storage',
+      partialize: (state) => ({
+        words: state.words,
+        currentSession: state.currentSession,
+        lastSyncedAt: state.lastSyncedAt,
+      }),
     }
   )
 )

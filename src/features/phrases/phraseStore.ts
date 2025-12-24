@@ -2,12 +2,14 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { Phrase, PhraseCategory, PhraseProgress, PracticeSession } from '../../types/phrases';
 import { PHRASES } from '../../data/phrases';
+import { syncService } from '../../lib/syncService';
 
 interface PhraseStore {
   // Data
   phrases: Phrase[];
   progress: Map<string, PhraseProgress>;
   sessions: PracticeSession[];
+  lastSyncedAt: Date | null;
 
   // Computed stats
   getTotalPhrases: () => number;
@@ -40,6 +42,10 @@ interface PhraseStore {
 
   // Reset
   resetProgress: () => void;
+
+  // Sync management
+  syncToCloud: (userId: string) => Promise<void>;
+  syncFromCloud: (userId: string) => Promise<void>;
 }
 
 // Helper to convert Map to array for persistence
@@ -63,6 +69,7 @@ export const usePhraseStore = create<PhraseStore>()(
       phrases: PHRASES,
       progress: new Map<string, PhraseProgress>(),
       sessions: [],
+      lastSyncedAt: null,
 
       // Computed stats
       getTotalPhrases: () => get().phrases.length,
@@ -291,6 +298,41 @@ export const usePhraseStore = create<PhraseStore>()(
       resetProgress: () => {
         set({ progress: new Map(), sessions: [] });
       },
+
+      // Sync to Supabase
+      syncToCloud: async (userId: string) => {
+        const { progress } = get();
+
+        if (!syncService.isOnline() || progress.size === 0) {
+          return;
+        }
+
+        const progressArray = Array.from(progress.values());
+        const result = await syncService.syncPhraseProgressToCloud(userId, progressArray);
+
+        if (result.success) {
+          set({ lastSyncedAt: new Date() });
+        }
+      },
+
+      // Sync from Supabase
+      syncFromCloud: async (userId: string) => {
+        if (!syncService.isOnline()) {
+          return;
+        }
+
+        const cloudProgress = await syncService.fetchPhraseProgressFromCloud(userId);
+
+        if (cloudProgress.length > 0) {
+          const localProgress = Array.from(get().progress.values());
+          const mergedProgress = syncService.mergePhraseProgress(localProgress, cloudProgress);
+
+          const progressMap = new Map<string, PhraseProgress>();
+          mergedProgress.forEach(p => progressMap.set(p.phraseId, p));
+
+          set({ progress: progressMap, lastSyncedAt: new Date() });
+        }
+      },
     }),
     {
       name: 'fastfrench-phrases',
@@ -304,6 +346,7 @@ export const usePhraseStore = create<PhraseStore>()(
             state: {
               ...data.state,
               progress: arrayToMap(data.state.progress || []),
+              lastSyncedAt: data.state.lastSyncedAt ? new Date(data.state.lastSyncedAt) : null,
             },
           };
         },
@@ -312,6 +355,7 @@ export const usePhraseStore = create<PhraseStore>()(
             state: {
               ...value.state,
               progress: mapToArray(value.state.progress),
+              lastSyncedAt: value.state.lastSyncedAt?.toISOString() || null,
             },
           };
           localStorage.setItem(name, JSON.stringify(data));

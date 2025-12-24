@@ -43,6 +43,8 @@ export type { AudioPlayerProps } from './AudioPlayer';
 export { VoiceSelector, VoiceSelectorCompact } from './VoiceSelector';
 export type { VoiceSelectorProps } from './VoiceSelector';
 
+export { ProtectedRoute } from './ProtectedRoute';
+
 // Shared Types
 export type {
   Size,
