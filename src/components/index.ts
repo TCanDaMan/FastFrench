@@ -37,6 +37,12 @@ export { LevelUpModal } from './LevelUpModal';
 
 export { CountdownTimer } from './CountdownTimer';
 
+export { AudioPlayer } from './AudioPlayer';
+export type { AudioPlayerProps } from './AudioPlayer';
+
+export { VoiceSelector, VoiceSelectorCompact } from './VoiceSelector';
+export type { VoiceSelectorProps } from './VoiceSelector';
+
 // Shared Types
 export type {
   Size,

@@ -47,3 +47,14 @@ export interface Achievement {
 
 // Re-export vocabulary types
 export type { VocabularyWord, VocabularyCategory, VocabularyStats, CategoryInfo } from './vocabulary'
+
+// Re-export phrase types
+export type {
+  Phrase,
+  PhraseCategory,
+  CategoryInfo as PhraseCategoryInfo,
+  PhraseProgress,
+  PracticeSession,
+  Scenario
+} from './phrases'
+export { CATEGORY_INFO } from './phrases'

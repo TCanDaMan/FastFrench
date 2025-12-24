@@ -3,6 +3,8 @@ import { motion } from 'framer-motion'
 import type { VocabularyWord } from '../../types/vocabulary'
 import { CATEGORY_INFO } from '../../types/vocabulary'
 import { QUALITY_RATINGS } from '../../lib/spacedRepetition'
+import { useTTS } from '../../hooks/useTTS'
+import { AudioPlayer } from '../../components/AudioPlayer'
 
 interface FlashcardProps {
   word: VocabularyWord
@@ -13,7 +15,7 @@ interface FlashcardProps {
 
 export function Flashcard({ word, onRate, cardNumber, totalCards }: FlashcardProps) {
   const [isFlipped, setIsFlipped] = useState(false)
-  const [isPlayingAudio, setIsPlayingAudio] = useState(false)
+  const { speak, speaking, stop } = useTTS()
 
   const categoryInfo = CATEGORY_INFO[word.category]
 
@@ -21,22 +23,20 @@ export function Flashcard({ word, onRate, cardNumber, totalCards }: FlashcardPro
     setIsFlipped(!isFlipped)
   }
 
-  const handlePlayAudio = (e: React.MouseEvent) => {
+  const handlePlayAudio = async (e: React.MouseEvent, slow: boolean = false) => {
     e.stopPropagation()
-    setIsPlayingAudio(true)
 
-    // Use Web Speech API for text-to-speech
-    if ('speechSynthesis' in window) {
-      const utterance = new SpeechSynthesisUtterance(word.french)
-      utterance.lang = 'fr-FR'
-      utterance.rate = 0.8 // Slower for learning
+    if (speaking) {
+      stop()
+      return
+    }
 
-      utterance.onend = () => {
-        setIsPlayingAudio(false)
-      }
-
-      speechSynthesis.cancel() // Cancel any ongoing speech
-      speechSynthesis.speak(utterance)
+    try {
+      await speak(word.french, {
+        rate: slow ? 0.6 : 0.9,
+      })
+    } catch (error) {
+      console.error('TTS Error:', error)
     }
   }
 
@@ -85,27 +85,38 @@ export function Flashcard({ word, onRate, cardNumber, totalCards }: FlashcardPro
               <h2 className="text-5xl font-bold mb-4 text-center">{word.french}</h2>
               <p className="text-2xl text-white/90 mb-6 font-light">{word.phonetic}</p>
 
-              <button
-                onClick={handlePlayAudio}
-                className="flex items-center gap-2 px-6 py-3 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-full transition-all duration-200 transform hover:scale-105"
-              >
-                <svg
-                  className={`w-6 h-6 ${isPlayingAudio ? 'animate-pulse' : ''}`}
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
+              {/* Audio Controls */}
+              <div className="flex items-center gap-3 mb-4" onClick={(e) => e.stopPropagation()}>
+                <button
+                  onClick={(e) => handlePlayAudio(e, true)}
+                  className="flex items-center gap-2 px-5 py-2.5 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-full transition-all duration-200 transform hover:scale-105"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"
-                  />
-                </svg>
-                <span className="font-medium">Play</span>
-              </button>
+                  <span className="text-xl">🐢</span>
+                  <span className="font-medium text-sm">Slow</span>
+                </button>
 
-              <p className="mt-8 text-white/70 text-sm">Tap to reveal</p>
+                <button
+                  onClick={(e) => handlePlayAudio(e, false)}
+                  className="flex items-center gap-2 px-5 py-2.5 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-full transition-all duration-200 transform hover:scale-105"
+                >
+                  <svg
+                    className={`w-5 h-5 ${speaking ? 'animate-pulse' : ''}`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"
+                    />
+                  </svg>
+                  <span className="font-medium text-sm">Normal</span>
+                </button>
+              </div>
+
+              <p className="mt-6 text-white/70 text-sm">Tap to reveal</p>
             </div>
           </div>
 
@@ -124,9 +135,15 @@ export function Flashcard({ word, onRate, cardNumber, totalCards }: FlashcardPro
               </h3>
 
               {word.exampleSentence && (
-                <div className="mb-8 p-4 bg-gray-100 dark:bg-gray-700 rounded-xl max-w-md">
-                  <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">Example:</p>
-                  <p className="text-gray-700 dark:text-gray-300 italic">{word.exampleSentence}</p>
+                <div className="mb-8 p-4 bg-gray-100 dark:bg-gray-700 rounded-xl max-w-md" onClick={(e) => e.stopPropagation()}>
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">Example:</p>
+                  <p className="text-gray-700 dark:text-gray-300 italic mb-3">{word.exampleSentence}</p>
+                  <AudioPlayer
+                    text={word.exampleSentence}
+                    lang="fr-FR"
+                    variant="compact"
+                    showSpeedControl
+                  />
                 </div>
               )}
 
