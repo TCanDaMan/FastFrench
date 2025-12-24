@@ -16,7 +16,7 @@ import { ProtectedRoute } from './components/ProtectedRoute'
 function App() {
   return (
     <BrowserRouter>
-      <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-accent-50">
+      <div className="min-h-screen bg-black">
         <Routes>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignUpPage />} />
@@ -34,7 +34,7 @@ function App() {
         <motion.nav
           initial={{ y: 100 }}
           animate={{ y: 0 }}
-          className="fixed bottom-0 lg:bottom-auto lg:top-0 left-0 right-0 bg-white/95 backdrop-blur-sm border-t lg:border-t-0 lg:border-b border-gray-200 safe-area-inset-bottom z-50"
+          className="fixed bottom-0 lg:bottom-auto lg:top-0 left-0 right-0 bg-zinc-900/95 backdrop-blur-sm border-t lg:border-t-0 lg:border-b border-zinc-800 safe-area-inset-bottom z-50"
         >
           <div className="max-w-4xl mx-auto px-4 sm:px-6">
             <div className="flex justify-around lg:justify-center lg:gap-12 items-center h-16 lg:h-14">
@@ -59,7 +59,7 @@ interface NavItemProps {
 
 function NavItem({ to, icon: Icon, label }: NavItemProps) {
   return (
-    <Link to={to} className="flex flex-col items-center gap-1 text-gray-600 hover:text-primary-600 transition-colors">
+    <Link to={to} className="flex flex-col items-center gap-1 text-zinc-400 hover:text-white transition-colors">
       <Icon className="w-6 h-6" />
       <span className="text-xs font-medium">{label}</span>
     </Link>
