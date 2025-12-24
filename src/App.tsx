@@ -16,8 +16,7 @@ import { ProtectedRoute } from './components/ProtectedRoute'
 function App() {
   return (
     <BrowserRouter>
-      <div className="min-h-screen w-full bg-black flex flex-col items-center">
-        <div className="w-full">
+      <div className="min-h-screen bg-black">
         <Routes>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignUpPage />} />
@@ -30,7 +29,6 @@ function App() {
           <Route path="/progress" element={<ProtectedRoute><ProgressPage /></ProtectedRoute>} />
           <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
         </Routes>
-        </div>
 
         {/* Bottom Navigation - becomes top nav on large screens */}
         <motion.nav

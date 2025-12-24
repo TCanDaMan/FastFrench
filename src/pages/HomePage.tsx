@@ -15,8 +15,9 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-black text-white pb-28 pt-20 lg:pt-24">
       {/* Hero Banner */}
-      <div className="bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 mx-4 lg:mx-auto lg:max-w-4xl rounded-3xl overflow-hidden shadow-2xl">
-        <div className="px-6 py-8 lg:py-10">
+      <div className="max-w-4xl mx-auto px-4">
+        <div className="bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 rounded-3xl overflow-hidden shadow-2xl">
+          <div className="px-6 py-8 lg:py-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -60,6 +61,7 @@ export default function HomePage() {
               <p className="text-sm text-purple-200">Daily Goal</p>
             </div>
           </motion.div>
+          </div>
         </div>
       </div>
 
