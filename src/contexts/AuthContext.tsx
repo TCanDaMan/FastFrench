@@ -120,6 +120,17 @@ export function AuthProvider({ children }: AuthProviderProps) {
     setProfile(null)
   }
 
+  // Refresh session when PWA comes back to foreground
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        supabase.auth.getSession()
+      }
+    }
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange)
+  }, [])
+
   // Listen to auth state changes
   useEffect(() => {
     let mounted = true
