@@ -9,9 +9,9 @@ interface AuthContextType {
   user: User | null
   profile: Profile | null
   loading: boolean
-  signIn: (email: string) => Promise<{ error: AuthError | null }>
+  signIn: (email: string, password: string) => Promise<{ error: AuthError | null }>
   signOut: () => Promise<void>
-  signUp: (email: string, displayName: string) => Promise<{ error: AuthError | null }>
+  signUp: (email: string, password: string, displayName: string) => Promise<{ error: AuthError | null }>
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -80,14 +80,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   }
 
-  // Sign in with magic link
-  const signIn = async (email: string) => {
+  // Sign in with email/password
+  const signIn = async (email: string, password: string) => {
     try {
-      const { error } = await supabase.auth.signInWithOtp({
+      const { error } = await supabase.auth.signInWithPassword({
         email,
-        options: {
-          emailRedirectTo: `${window.location.origin}/auth/callback`,
-        },
+        password,
       })
       return { error }
     } catch (error) {
@@ -95,13 +93,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   }
 
-  // Sign up with magic link
-  const signUp = async (email: string, displayName: string) => {
+  // Sign up with email/password
+  const signUp = async (email: string, password: string, displayName: string) => {
     try {
-      const { error } = await supabase.auth.signInWithOtp({
+      const { error } = await supabase.auth.signUp({
         email,
+        password,
         options: {
-          emailRedirectTo: `${window.location.origin}/auth/callback`,
           data: {
             display_name: displayName,
           },

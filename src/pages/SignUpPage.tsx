@@ -1,15 +1,14 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
-import { Mail, User, Sparkles, ArrowRight } from 'lucide-react'
+import { Mail, User, Lock, Sparkles, ArrowRight } from 'lucide-react'
 import { useAuth } from '../hooks/useAuth'
 import { motion } from 'framer-motion'
-import { Button } from '../components/Button'
 
 export default function SignUpPage() {
   const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const [displayName, setDisplayName] = useState('')
   const [loading, setLoading] = useState(false)
-  const [sent, setSent] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const { signUp, user } = useAuth()
   const navigate = useNavigate()
@@ -25,19 +24,24 @@ export default function SignUpPage() {
     setLoading(true)
     setError(null)
 
-    const { error } = await signUp(email, displayName || email.split('@')[0])
+    if (password.length < 6) {
+      setError('Password must be at least 6 characters')
+      setLoading(false)
+      return
+    }
+
+    const { error } = await signUp(email, password, displayName || email.split('@')[0])
 
     if (error) {
       setError(error.message)
       setLoading(false)
     } else {
-      setSent(true)
-      setLoading(false)
+      navigate('/')
     }
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 via-white to-accent-50 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-black px-4 pb-20">
       <div className="w-full max-w-md">
         {/* Logo & Header */}
         <motion.div
@@ -50,15 +54,15 @@ export default function SignUpPage() {
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-            className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-primary-600 to-accent-600 mb-4"
+            className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-indigo-600 to-purple-600 mb-6 shadow-2xl"
           >
             <Sparkles className="w-10 h-10 text-white" />
           </motion.div>
 
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+          <h1 className="text-3xl font-bold text-white mb-2">
             Start learning French
           </h1>
-          <p className="text-gray-600">
+          <p className="text-zinc-400">
             Create your account and begin your journey to Paris
           </p>
         </motion.div>
@@ -68,108 +72,97 @@ export default function SignUpPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3, duration: 0.6 }}
-          className="bg-white rounded-2xl shadow-xl p-8"
+          className="bg-zinc-900 rounded-3xl border-2 border-zinc-800 p-8"
         >
-          {!sent ? (
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div>
-                <label htmlFor="displayName" className="block text-sm font-medium text-gray-700 mb-2">
-                  Display name (optional)
-                </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <User className="h-5 w-5 text-gray-400" />
-                  </div>
-                  <input
-                    id="displayName"
-                    type="text"
-                    value={displayName}
-                    onChange={(e) => setDisplayName(e.target.value)}
-                    placeholder="Your name"
-                    className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all"
-                    disabled={loading}
-                  />
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div>
+              <label htmlFor="displayName" className="block text-sm font-medium text-zinc-300 mb-2">
+                Display name (optional)
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <User className="h-5 w-5 text-zinc-500" />
                 </div>
+                <input
+                  id="displayName"
+                  type="text"
+                  value={displayName}
+                  onChange={(e) => setDisplayName(e.target.value)}
+                  placeholder="Your name"
+                  className="block w-full pl-12 pr-4 py-4 bg-zinc-800 border-2 border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all"
+                  disabled={loading}
+                />
               </div>
+            </div>
 
-              <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                  Email address
-                </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Mail className="h-5 w-5 text-gray-400" />
-                  </div>
-                  <input
-                    id="email"
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="vous@example.com"
-                    required
-                    className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all"
-                    disabled={loading}
-                  />
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-zinc-300 mb-2">
+                Email address
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <Mail className="h-5 w-5 text-zinc-500" />
                 </div>
+                <input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="vous@example.com"
+                  required
+                  className="block w-full pl-12 pr-4 py-4 bg-zinc-800 border-2 border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all"
+                  disabled={loading}
+                />
               </div>
+            </div>
 
-              {error && (
-                <motion.div
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm"
-                >
-                  {error}
-                </motion.div>
-              )}
+            <div>
+              <label htmlFor="password" className="block text-sm font-medium text-zinc-300 mb-2">
+                Password
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <Lock className="h-5 w-5 text-zinc-500" />
+                </div>
+                <input
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  required
+                  className="block w-full pl-12 pr-4 py-4 bg-zinc-800 border-2 border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all"
+                  disabled={loading}
+                />
+              </div>
+              <p className="text-xs text-zinc-500 mt-1">At least 6 characters</p>
+            </div>
 
-              <Button
-                type="submit"
-                variant="primary"
-                size="lg"
-                fullWidth
-                loading={loading}
+            {error && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="bg-red-500/20 border border-red-500/50 text-red-400 px-4 py-3 rounded-xl text-sm"
               >
-                {!loading && (
-                  <>
-                    Create Account
-                    <ArrowRight className="w-5 h-5 ml-2 inline" />
-                  </>
-                )}
-              </Button>
+                {error}
+              </motion.div>
+            )}
 
-              <p className="text-xs text-gray-500 text-center">
-                No password needed - we'll email you a secure magic link!
-              </p>
-            </form>
-          ) : (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="text-center space-y-4 py-4"
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold py-4 rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2 disabled:opacity-50"
             >
-              <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto">
-                <Mail className="w-8 h-8 text-green-600" />
-              </div>
-              <h2 className="text-2xl font-bold text-gray-900">Check your email!</h2>
-              <p className="text-gray-600">
-                We've sent a magic link to <span className="font-semibold">{email}</span>
-              </p>
-              <p className="text-sm text-gray-500">
-                Click the link in your email to complete your account setup
-              </p>
-              <button
-                onClick={() => {
-                  setSent(false)
-                  setEmail('')
-                  setDisplayName('')
-                }}
-                className="text-primary-600 hover:text-primary-700 text-sm font-semibold transition-colors"
-              >
-                Use a different email
-              </button>
-            </motion.div>
-          )}
+              {loading ? (
+                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              ) : (
+                <>
+                  Create Account
+                  <ArrowRight className="w-5 h-5" />
+                </>
+              )}
+            </button>
+          </form>
         </motion.div>
 
         {/* Login Link */}
@@ -177,11 +170,11 @@ export default function SignUpPage() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5 }}
-          className="text-center mt-6"
+          className="text-center mt-8"
         >
-          <p className="text-gray-600">
+          <p className="text-zinc-400">
             Already have an account?{' '}
-            <Link to="/login" className="text-primary-600 font-semibold hover:text-primary-700 transition-colors">
+            <Link to="/login" className="text-indigo-400 font-semibold hover:text-indigo-300 transition-colors">
               Sign in
             </Link>
           </p>
