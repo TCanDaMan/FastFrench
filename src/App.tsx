@@ -1,8 +1,9 @@
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Home, BookOpen, Trophy, User } from 'lucide-react'
+import { Home, BookOpen, Trophy, User, GraduationCap } from 'lucide-react'
 import HomePage from './pages/HomePage'
 import LessonsPage from './pages/LessonsPage'
+import PracticePage from './pages/PracticePage'
 import ProgressPage from './pages/ProgressPage'
 import ProfilePage from './pages/ProfilePage'
 
@@ -13,6 +14,7 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/lessons" element={<LessonsPage />} />
+          <Route path="/practice" element={<PracticePage />} />
           <Route path="/progress" element={<ProgressPage />} />
           <Route path="/profile" element={<ProfilePage />} />
         </Routes>
@@ -27,6 +29,7 @@ function App() {
             <div className="flex justify-around items-center h-16">
               <NavItem to="/" icon={Home} label="Home" />
               <NavItem to="/lessons" icon={BookOpen} label="Lessons" />
+              <NavItem to="/practice" icon={GraduationCap} label="Practice" />
               <NavItem to="/progress" icon={Trophy} label="Progress" />
               <NavItem to="/profile" icon={User} label="Profile" />
             </div>

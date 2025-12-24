@@ -44,3 +44,6 @@ export interface Achievement {
   unlocked: boolean
   unlockedAt?: Date
 }
+
+// Re-export vocabulary types
+export type { VocabularyWord, VocabularyCategory, VocabularyStats, CategoryInfo } from './vocabulary'
