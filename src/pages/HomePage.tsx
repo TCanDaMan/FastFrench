@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { Sparkles, ArrowRight, Flame, BookOpen, Brain, MessageCircle, Trophy, Target } from 'lucide-react'
+import { Sparkles, ArrowRight, Flame, BookOpen, Brain, MessageCircle, Trophy, Target, User } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 
@@ -13,126 +13,122 @@ export default function HomePage() {
   const dailyGoal = profile?.daily_xp_goal || 20
 
   return (
-    <div className="min-h-screen w-full bg-black text-white pb-28 pt-20 lg:pt-24">
-      {/* Hero Banner */}
-      <div className="max-w-4xl px-4" style={{ marginInline: 'auto' }}>
-        <div className="bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 rounded-3xl overflow-hidden shadow-2xl">
-          <div className="px-6 py-8 lg:py-10">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="flex items-center gap-4 mb-6"
-          >
-            <div className="w-16 h-16 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center shadow-lg">
-              <Sparkles className="w-8 h-8 text-white" />
+    <div className="min-h-screen w-full bg-zinc-950 text-white pb-24 pt-16 lg:pt-20">
+      <div className="max-w-2xl px-4" style={{ marginInline: 'auto' }}>
+
+        {/* Welcome Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-6"
+        >
+          <div className="flex items-center gap-4 mb-2">
+            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
+              <User className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h1 className="text-2xl lg:text-3xl font-bold">Bonjour, {displayName}!</h1>
-              <p className="text-purple-200">Ready to learn some French?</p>
+              <p className="text-zinc-400 text-sm">Welcome back</p>
+              <h1 className="text-2xl font-bold">Bonjour, {displayName}!</h1>
             </div>
-          </motion.div>
-
-          {/* Stats Row */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="grid grid-cols-3 gap-4"
-          >
-            <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-4 text-center shadow-lg">
-              <div className="flex items-center justify-center gap-2 text-yellow-300 mb-1">
-                <Flame className="w-5 h-5" />
-                <span className="text-2xl font-bold">{currentStreak}</span>
-              </div>
-              <p className="text-sm text-purple-200">Day Streak</p>
-            </div>
-            <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-4 text-center shadow-lg">
-              <div className="flex items-center justify-center gap-2 text-green-300 mb-1">
-                <Trophy className="w-5 h-5" />
-                <span className="text-2xl font-bold">{totalXp}</span>
-              </div>
-              <p className="text-sm text-purple-200">Total XP</p>
-            </div>
-            <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-4 text-center shadow-lg">
-              <div className="flex items-center justify-center gap-2 text-pink-300 mb-1">
-                <Target className="w-5 h-5" />
-                <span className="text-2xl font-bold">0/{dailyGoal}</span>
-              </div>
-              <p className="text-sm text-purple-200">Daily Goal</p>
-            </div>
-          </motion.div>
           </div>
-        </div>
-      </div>
+        </motion.div>
 
-      {/* Main Content */}
-      <div className="max-w-4xl px-4 mt-8" style={{ marginInline: 'auto' }}>
-        {/* Paris Countdown Card */}
+        {/* Stats Cards */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="grid grid-cols-3 gap-3 mb-6"
+        >
+          <div className="bg-zinc-900 rounded-2xl p-4 border border-zinc-800">
+            <div className="flex items-center gap-2 text-orange-400 mb-1">
+              <Flame className="w-5 h-5" />
+              <span className="text-2xl font-bold">{currentStreak}</span>
+            </div>
+            <p className="text-xs text-zinc-500">Day Streak</p>
+          </div>
+          <div className="bg-zinc-900 rounded-2xl p-4 border border-zinc-800">
+            <div className="flex items-center gap-2 text-yellow-400 mb-1">
+              <Trophy className="w-5 h-5" />
+              <span className="text-2xl font-bold">{totalXp}</span>
+            </div>
+            <p className="text-xs text-zinc-500">Total XP</p>
+          </div>
+          <div className="bg-zinc-900 rounded-2xl p-4 border border-zinc-800">
+            <div className="flex items-center gap-2 text-emerald-400 mb-1">
+              <Target className="w-5 h-5" />
+              <span className="text-2xl font-bold">0/{dailyGoal}</span>
+            </div>
+            <p className="text-xs text-zinc-500">Daily Goal</p>
+          </div>
+        </motion.div>
+
+        {/* Paris Countdown */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.15 }}
+          className="relative overflow-hidden bg-gradient-to-r from-rose-500 to-orange-500 rounded-2xl p-5 mb-6"
+        >
+          <div className="relative z-10">
+            <p className="text-rose-100 text-sm font-medium mb-1">Paris Trip Countdown</p>
+            <p className="text-4xl font-bold mb-1">~100 days</p>
+            <p className="text-rose-100 text-sm">Keep practicing daily!</p>
+          </div>
+          <div className="absolute right-4 top-1/2 -translate-y-1/2 text-6xl opacity-80">
+            🗼
+          </div>
+        </motion.div>
+
+        {/* Quick Actions Grid */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="bg-gradient-to-r from-orange-500 via-red-500 to-pink-500 rounded-3xl p-6 shadow-2xl mb-8"
-        >
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-orange-200 text-sm font-medium mb-1">Paris Trip Countdown</p>
-              <p className="text-4xl lg:text-5xl font-bold mb-2">~100 days</p>
-              <p className="text-orange-200 text-sm">Keep practicing daily!</p>
-            </div>
-            <div className="text-7xl">🗼</div>
-          </div>
-        </motion.div>
-
-        {/* Quick Actions */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="grid grid-cols-2 gap-4 mb-8"
+          className="grid grid-cols-2 gap-3 mb-6"
         >
           <button
             onClick={() => navigate('/practice')}
-            className="bg-zinc-900 rounded-3xl p-6 text-left group border-2 border-zinc-800 hover:border-blue-500 transition-all active:scale-95"
+            className="bg-zinc-900 rounded-2xl p-5 text-left border border-zinc-800 hover:border-indigo-500 hover:bg-zinc-800/50 transition-all active:scale-[0.98]"
           >
-            <div className="w-14 h-14 rounded-2xl bg-blue-500/20 flex items-center justify-center mb-4 group-hover:bg-blue-500 transition-colors">
-              <Brain className="w-7 h-7 text-blue-400 group-hover:text-white transition-colors" />
+            <div className="w-12 h-12 rounded-xl bg-indigo-500/20 flex items-center justify-center mb-3">
+              <Brain className="w-6 h-6 text-indigo-400" />
             </div>
-            <h3 className="font-bold text-lg text-white mb-1">Practice</h3>
-            <p className="text-sm text-zinc-400">Review flashcards</p>
+            <h3 className="font-semibold text-white mb-0.5">Practice</h3>
+            <p className="text-sm text-zinc-500">Review flashcards</p>
           </button>
 
           <button
             onClick={() => navigate('/phrases')}
-            className="bg-zinc-900 rounded-3xl p-6 text-left group border-2 border-zinc-800 hover:border-purple-500 transition-all active:scale-95"
+            className="bg-zinc-900 rounded-2xl p-5 text-left border border-zinc-800 hover:border-purple-500 hover:bg-zinc-800/50 transition-all active:scale-[0.98]"
           >
-            <div className="w-14 h-14 rounded-2xl bg-purple-500/20 flex items-center justify-center mb-4 group-hover:bg-purple-500 transition-colors">
-              <MessageCircle className="w-7 h-7 text-purple-400 group-hover:text-white transition-colors" />
+            <div className="w-12 h-12 rounded-xl bg-purple-500/20 flex items-center justify-center mb-3">
+              <MessageCircle className="w-6 h-6 text-purple-400" />
             </div>
-            <h3 className="font-bold text-lg text-white mb-1">Phrases</h3>
-            <p className="text-sm text-zinc-400">Travel essentials</p>
+            <h3 className="font-semibold text-white mb-0.5">Phrases</h3>
+            <p className="text-sm text-zinc-500">Travel essentials</p>
           </button>
 
           <button
             onClick={() => navigate('/lessons')}
-            className="bg-zinc-900 rounded-3xl p-6 text-left group border-2 border-zinc-800 hover:border-green-500 transition-all active:scale-95"
+            className="bg-zinc-900 rounded-2xl p-5 text-left border border-zinc-800 hover:border-emerald-500 hover:bg-zinc-800/50 transition-all active:scale-[0.98]"
           >
-            <div className="w-14 h-14 rounded-2xl bg-green-500/20 flex items-center justify-center mb-4 group-hover:bg-green-500 transition-colors">
-              <BookOpen className="w-7 h-7 text-green-400 group-hover:text-white transition-colors" />
+            <div className="w-12 h-12 rounded-xl bg-emerald-500/20 flex items-center justify-center mb-3">
+              <BookOpen className="w-6 h-6 text-emerald-400" />
             </div>
-            <h3 className="font-bold text-lg text-white mb-1">Lessons</h3>
-            <p className="text-sm text-zinc-400">Structured learning</p>
+            <h3 className="font-semibold text-white mb-0.5">Lessons</h3>
+            <p className="text-sm text-zinc-500">Structured learning</p>
           </button>
 
           <button
             onClick={() => navigate('/progress')}
-            className="bg-zinc-900 rounded-3xl p-6 text-left group border-2 border-zinc-800 hover:border-amber-500 transition-all active:scale-95"
+            className="bg-zinc-900 rounded-2xl p-5 text-left border border-zinc-800 hover:border-amber-500 hover:bg-zinc-800/50 transition-all active:scale-[0.98]"
           >
-            <div className="w-14 h-14 rounded-2xl bg-amber-500/20 flex items-center justify-center mb-4 group-hover:bg-amber-500 transition-colors">
-              <Trophy className="w-7 h-7 text-amber-400 group-hover:text-white transition-colors" />
+            <div className="w-12 h-12 rounded-xl bg-amber-500/20 flex items-center justify-center mb-3">
+              <Trophy className="w-6 h-6 text-amber-400" />
             </div>
-            <h3 className="font-bold text-lg text-white mb-1">Progress</h3>
-            <p className="text-sm text-zinc-400">Track your stats</p>
+            <h3 className="font-semibold text-white mb-0.5">Progress</h3>
+            <p className="text-sm text-zinc-500">Track your stats</p>
           </button>
         </motion.div>
 
@@ -140,36 +136,35 @@ export default function HomePage() {
         <motion.button
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          whileHover={{ scale: 1.02 }}
+          transition={{ delay: 0.25 }}
           whileTap={{ scale: 0.98 }}
           onClick={() => navigate('/practice')}
-          className="w-full bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white font-bold py-5 rounded-2xl shadow-2xl transition-all flex items-center justify-center gap-3 text-lg"
+          className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-semibold py-4 rounded-xl transition-all flex items-center justify-center gap-2"
         >
           Start Learning
-          <ArrowRight className="w-6 h-6" />
+          <ArrowRight className="w-5 h-5" />
         </motion.button>
 
-        {/* Tip Card */}
+        {/* Pro Tip */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-          className="mt-8 bg-zinc-900 border-2 border-zinc-800 rounded-2xl p-5"
+          transition={{ delay: 0.3 }}
+          className="mt-6 bg-zinc-900 border border-zinc-800 rounded-2xl p-4"
         >
-          <div className="flex items-start gap-4">
+          <div className="flex items-start gap-3">
             <div className="w-10 h-10 rounded-xl bg-indigo-500/20 flex items-center justify-center flex-shrink-0">
               <Sparkles className="w-5 h-5 text-indigo-400" />
             </div>
             <div>
-              <h4 className="font-bold text-white mb-1">Pro Tip</h4>
-              <p className="text-sm text-zinc-400">
-                Practice for just 10 minutes a day to build a lasting habit.
-                Consistency beats intensity!
+              <h4 className="font-semibold text-white mb-1">Pro Tip</h4>
+              <p className="text-sm text-zinc-400 leading-relaxed">
+                Practice for just 10 minutes a day to build a lasting habit. Consistency beats intensity!
               </p>
             </div>
           </div>
         </motion.div>
+
       </div>
     </div>
   )
