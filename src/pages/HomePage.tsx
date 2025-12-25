@@ -15,7 +15,7 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen w-full bg-zinc-950 text-white" style={{ paddingBottom: '6rem', paddingTop: '5rem' }}>
-      <div className="px-4 sm:px-6 lg:px-8" style={{ maxWidth: '64rem', marginInline: 'auto' }}>
+      <div className="px-4 sm:px-6 lg:px-8 mx-auto" style={{ maxWidth: '72rem' }}>
 
         {/* Welcome Header */}
         <motion.div
@@ -42,8 +42,7 @@ export default function HomePage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="grid grid-cols-2 sm:grid-cols-3 mb-8"
-          style={{ gap: '1.25rem' }}
+          className="grid grid-cols-2 sm:grid-cols-3 gap-5 mb-8"
         >
           <div className="bg-zinc-900 rounded-2xl p-5 border border-zinc-700 shadow-lg shadow-black/20">
             <div className="flex items-center gap-3 text-orange-400 mb-2">
@@ -90,8 +89,7 @@ export default function HomePage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="grid grid-cols-3 mb-8"
-          style={{ gap: '1.25rem' }}
+          className="grid grid-cols-3 gap-5 mb-8"
         >
           <button
             onClick={() => navigate('/practice')}

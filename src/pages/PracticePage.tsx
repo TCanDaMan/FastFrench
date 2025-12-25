@@ -67,7 +67,7 @@ export default function PracticePage() {
 
   return (
     <div className="min-h-screen bg-zinc-950 text-white" style={{ paddingBottom: '5rem', paddingTop: '5rem' }}>
-      <div className="px-4 sm:px-6 lg:px-8" style={{ maxWidth: '80rem', marginInline: 'auto' }}>
+      <div className="px-4 sm:px-6 lg:px-8 mx-auto" style={{ maxWidth: '72rem' }}>
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-white mb-2">Practice</h1>
@@ -76,24 +76,24 @@ export default function PracticePage() {
           </p>
         </div>
 
-        {/* View Tabs */}
-        <div className="flex mb-8" style={{ gap: '0.5rem' }}>
+        {/* View Tabs - iOS-style pill toggle */}
+        <div className="inline-flex bg-zinc-800 rounded-xl p-1.5 mb-8 border border-zinc-700">
           <button
             onClick={() => setView('selection')}
-            className={`px-6 py-3 rounded-xl font-semibold transition-all ${
-              view === 'selection'
-                ? 'bg-indigo-600 text-white shadow-lg scale-105'
-                : 'bg-zinc-900 border border-zinc-700 text-zinc-300 hover:bg-zinc-800 hover:text-white'
+            className={`px-6 py-2.5 rounded-lg font-semibold transition-all ${
+              view === 'selection' || view === 'practice'
+                ? 'bg-indigo-600 text-white shadow-md'
+                : 'text-zinc-400 hover:text-white'
             }`}
           >
             Practice
           </button>
           <button
             onClick={() => setView('browse')}
-            className={`px-6 py-3 rounded-xl font-semibold transition-all ${
+            className={`px-6 py-2.5 rounded-lg font-semibold transition-all ${
               view === 'browse'
-                ? 'bg-indigo-600 text-white shadow-lg scale-105'
-                : 'bg-zinc-900 border border-zinc-700 text-zinc-300 hover:bg-zinc-800 hover:text-white'
+                ? 'bg-indigo-600 text-white shadow-md'
+                : 'text-zinc-400 hover:text-white'
             }`}
           >
             Browse
@@ -109,7 +109,7 @@ export default function PracticePage() {
               exit={{ opacity: 0, y: -20 }}
             >
               {/* Daily Stats */}
-              <div className="grid grid-cols-2 md:grid-cols-4 mb-8" style={{ gap: '1rem' }}>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-5 mb-8">
                 <StatCard
                   icon="📚"
                   label="Total Words"
@@ -137,7 +137,7 @@ export default function PracticePage() {
               </div>
 
               {/* Practice Options */}
-              <div className="grid md:grid-cols-2 mb-8" style={{ gap: '1.5rem' }}>
+              <div className="grid md:grid-cols-2 gap-6 mb-8">
                 {/* Review Due Words */}
                 <PracticeModeCard
                   icon="🔴"
@@ -166,7 +166,7 @@ export default function PracticePage() {
                 <h2 className="text-xl font-bold text-white mb-4">
                   Practice by Category
                 </h2>
-                <div className="grid grid-cols-2 md:grid-cols-5" style={{ gap: '1rem' }}>
+                <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
                   {(Object.keys(CATEGORY_INFO) as VocabularyCategory[]).map((category) => {
                     const info = CATEGORY_INFO[category]
                     const categoryWords = getWordsByCategory(category)
@@ -370,7 +370,7 @@ function SessionSummaryModal({
         </h2>
         <p className="text-zinc-400 mb-6">Great job practicing!</p>
 
-        <div className="grid grid-cols-2 mb-6" style={{ gap: '1rem' }}>
+        <div className="grid grid-cols-2 gap-4 mb-6">
           <div className="bg-blue-500/20 rounded-xl p-4">
             <div className="text-3xl font-bold text-blue-400">
               {session.wordsReviewed}

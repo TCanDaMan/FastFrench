@@ -37,7 +37,7 @@ function App() {
           className="fixed bottom-0 lg:bottom-auto lg:top-0 left-0 right-0 bg-zinc-900/95 backdrop-blur-sm border-t lg:border-t-0 lg:border-b border-zinc-800 safe-area-inset-bottom z-50"
         >
           <div className="px-4 sm:px-6 lg:px-8" style={{ maxWidth: '72rem', marginInline: 'auto' }}>
-            <div className="flex justify-around lg:justify-center items-center h-18" style={{ gap: '1.5rem' }}>
+            <div className="flex justify-around lg:justify-center items-center h-18 gap-6 lg:gap-10">
               <NavItem to="/" icon={Home} label="Home" />
               <NavItem to="/phrases" icon={MessageCircle} label="Phrases" />
               <NavItem to="/practice" icon={GraduationCap} label="Practice" />
@@ -58,7 +58,7 @@ interface NavItemProps {
 
 function NavItem({ to, icon: Icon, label }: NavItemProps) {
   return (
-    <Link to={to} className="flex flex-col items-center gap-1.5 text-zinc-400 hover:text-white transition-colors px-4 py-3 lg:px-5">
+    <Link to={to} className="flex flex-col items-center gap-1.5 text-zinc-400 hover:text-white transition-colors px-4 py-3 lg:px-6">
       <Icon className="w-7 h-7 lg:w-7 lg:h-7" />
       <span className="text-sm lg:text-sm font-medium">{label}</span>
     </Link>

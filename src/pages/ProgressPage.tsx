@@ -25,7 +25,7 @@ export default function ProgressPage() {
 
   return (
     <div className="min-h-screen bg-zinc-950 text-white" style={{ paddingBottom: '5rem', paddingTop: '5rem' }}>
-      <div className="px-4 sm:px-6 lg:px-8" style={{ maxWidth: '64rem', marginInline: 'auto' }}>
+      <div className="px-4 sm:px-6 lg:px-8 mx-auto" style={{ maxWidth: '72rem' }}>
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -36,7 +36,7 @@ export default function ProgressPage() {
         </motion.div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 mb-8" style={{ gap: '1rem' }}>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
           <StatCard
             icon={Flame}
             title="Day Streak"
@@ -86,13 +86,13 @@ export default function ProgressPage() {
             </div>
           </div>
 
-          <div className="flex justify-between items-end" style={{ height: '10rem', gap: '0.5rem' }}>
+          <div className="flex justify-between items-end h-40 gap-2">
             {weeklyData.map((data, index) => {
               const height = maxXp > 0 ? (data.xp / maxXp) * 100 : 0
               const isToday = index === new Date().getDay() - 1 || (index === 6 && new Date().getDay() === 0)
 
               return (
-                <div key={index} className="flex flex-col items-center flex-1" style={{ gap: '0.5rem' }}>
+                <div key={index} className="flex flex-col items-center flex-1 gap-2">
                   <div className="w-full flex flex-col justify-end" style={{ height: '8rem' }}>
                     <motion.div
                       initial={{ height: 0 }}
@@ -141,7 +141,7 @@ export default function ProgressPage() {
               {achievements.filter(a => a.unlocked).length}/{achievements.length} unlocked
             </span>
           </div>
-          <div className="grid grid-cols-4 sm:grid-cols-6" style={{ gap: '1rem' }}>
+          <div className="grid grid-cols-4 sm:grid-cols-6 gap-3">
             {achievements.length > 0 ? (
               achievements.slice(0, 8).map((achievement) => (
                 <div

@@ -192,7 +192,7 @@ export default function PhrasesPage() {
       <div className="px-4 sm:px-6 lg:px-8 py-6" style={{ maxWidth: '72rem', marginInline: 'auto' }}>
         {/* Category Pills */}
         <h2 className="text-xl font-bold text-white mb-4">Browse by Category</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 mb-10" style={{ gap: '1.25rem' }}>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 sm:gap-5 mb-10">
           {categories.map((category) => {
             const info = CATEGORY_INFO[category];
             const progress = getCategoryProgress(category);
@@ -234,7 +234,7 @@ export default function PhrasesPage() {
             Real-world situations to test your French skills
           </p>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2" style={{ gap: '1.5rem' }}>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             {SCENARIOS.map((scenario) => (
               <motion.button
                 key={scenario.id}
@@ -275,7 +275,7 @@ export default function PhrasesPage() {
               <p>No phrases found matching your search.</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2" style={{ gap: '1.5rem' }}>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <AnimatePresence>
                 {filteredPhrases.map((phrase, index) => (
                   <motion.div
