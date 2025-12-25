@@ -19,18 +19,18 @@ export const Card = ({
   return (
     <motion.div
       className={`
-        bg-white rounded-xl shadow-md overflow-hidden
-        ${hoverable ? 'cursor-pointer' : ''}
-        ${gradient ? 'border-t-4 border-primary-900' : ''}
+        bg-zinc-900 border border-zinc-800 rounded-2xl shadow-card overflow-hidden
+        ${hoverable ? 'cursor-pointer hover:border-zinc-700 hover:shadow-card-hover' : ''}
+        ${gradient ? 'border-t-2 border-t-gold-500' : ''}
         ${className}
       `}
       onClick={onClick}
-      whileHover={hoverable ? { y: -4, shadow: '0 20px 25px -5px rgb(0 0 0 / 0.1)' } : undefined}
-      transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+      whileHover={hoverable ? { y: -4 } : undefined}
+      transition={{ type: 'spring', stiffness: 300, damping: 25 }}
       {...props}
     >
       {gradient && (
-        <div className="h-1 bg-gradient-to-r from-primary-900 via-primary-600 to-accent-600" />
+        <div className="h-1 bg-gradient-to-r from-gold-500 via-gold-400 to-amber-500" />
       )}
       {children}
     </motion.div>
@@ -61,5 +61,5 @@ interface CardFooterProps {
 }
 
 export const CardFooter = ({ children, className = '' }: CardFooterProps) => {
-  return <div className={`px-6 py-4 bg-gray-50 ${className}`}>{children}</div>;
+  return <div className={`px-6 py-4 bg-zinc-800/50 border-t border-zinc-800 ${className}`}>{children}</div>;
 };

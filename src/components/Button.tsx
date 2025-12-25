@@ -13,11 +13,11 @@ interface ButtonProps extends Omit<HTMLMotionProps<'button'>, 'size'> {
 }
 
 const variantStyles: Record<ButtonVariant, string> = {
-  primary: 'bg-primary-900 text-white hover:bg-primary-800 active:bg-primary-950',
-  secondary: 'bg-primary-100 text-primary-900 hover:bg-primary-200 active:bg-primary-300',
-  outline: 'border-2 border-primary-900 text-primary-900 hover:bg-primary-50 active:bg-primary-100',
-  ghost: 'text-primary-900 hover:bg-primary-50 active:bg-primary-100',
-  danger: 'bg-accent-600 text-white hover:bg-accent-700 active:bg-accent-800',
+  primary: 'gradient-gold text-zinc-950 hover:shadow-glow-gold active:opacity-90',
+  secondary: 'bg-zinc-800 text-white hover:bg-zinc-700 active:bg-zinc-600 border border-zinc-700',
+  outline: 'border-2 border-zinc-600 text-zinc-300 hover:bg-zinc-800 hover:border-zinc-500 active:bg-zinc-700',
+  ghost: 'text-zinc-400 hover:text-white hover:bg-zinc-800 active:bg-zinc-700',
+  danger: 'bg-danger-600 text-white hover:bg-danger-500 active:bg-danger-700',
 };
 
 const sizeStyles: Record<ButtonSize, string> = {
@@ -46,7 +46,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       <motion.button
         ref={ref}
         className={`
-          relative font-semibold rounded-lg transition-colors
+          relative font-semibold rounded-xl transition-all duration-200
           disabled:opacity-50 disabled:cursor-not-allowed
           ${variantStyles[variant]}
           ${sizeStyles[size]}

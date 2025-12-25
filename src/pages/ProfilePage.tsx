@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Settings, LogOut, Bell, Globe, Mail, Calendar, Target, ChevronRight } from 'lucide-react'
+import { LogOut, Mail, Calendar, Target } from 'lucide-react'
 import { useAuth } from '../hooks/useAuth'
 import { useNavigate } from 'react-router-dom'
 
@@ -61,7 +61,7 @@ export default function ProfilePage() {
           className="bg-zinc-900 border border-zinc-700 rounded-2xl p-6 mb-6"
         >
           <div className="flex items-center gap-4 mb-4">
-            <div className="w-20 h-20 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-2xl font-bold">
+            <div className="w-20 h-20 rounded-full bg-gradient-to-br from-gold-500 to-gold-600 flex items-center justify-center text-zinc-950 text-2xl font-bold">
               {profile ? getInitials(profile.display_name) : 'U'}
             </div>
             <div>
@@ -142,22 +142,20 @@ export default function ProfilePage() {
           </div>
         </motion.div>
 
-        {/* Settings Menu */}
+        {/* Sign Out */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
           className="bg-zinc-900 border border-zinc-700 rounded-2xl overflow-hidden"
         >
-          <MenuItem icon={Settings} label="Settings" />
-          <MenuItem icon={Bell} label="Notifications" />
-          <MenuItem icon={Globe} label="Language" />
-          <MenuItem
-            icon={LogOut}
-            label="Sign Out"
-            danger
+          <button
             onClick={() => setShowSignOutConfirm(true)}
-          />
+            className="w-full flex items-center gap-4 p-4 hover:bg-zinc-800 transition-colors text-red-400"
+          >
+            <LogOut className="w-5 h-5" />
+            <span className="font-medium flex-1 text-left">Sign Out</span>
+          </button>
         </motion.div>
       </div>
 
@@ -198,24 +196,3 @@ export default function ProfilePage() {
   )
 }
 
-interface MenuItemProps {
-  icon: React.ElementType
-  label: string
-  danger?: boolean
-  onClick?: () => void
-}
-
-function MenuItem({ icon: Icon, label, danger, onClick }: MenuItemProps) {
-  return (
-    <button
-      onClick={onClick}
-      className={`w-full flex items-center gap-4 p-4 hover:bg-zinc-800 transition-colors border-b border-zinc-700 last:border-0 ${
-        danger ? 'text-red-400' : 'text-white'
-      }`}
-    >
-      <Icon className="w-5 h-5" />
-      <span className="font-medium flex-1 text-left">{label}</span>
-      {!danger && <ChevronRight className="w-5 h-5 text-zinc-500" />}
-    </button>
-  )
-}

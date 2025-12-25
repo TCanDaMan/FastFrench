@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Home, BookOpen, Trophy, GraduationCap, MessageCircle } from 'lucide-react'
+import { Home, Trophy, GraduationCap, MessageCircle } from 'lucide-react'
 import HomePage from './pages/HomePage'
 import LessonsPage from './pages/LessonsPage'
 import PracticePage from './pages/PracticePage'
@@ -39,7 +39,6 @@ function App() {
           <div className="px-4 sm:px-6 lg:px-8" style={{ maxWidth: '72rem', marginInline: 'auto' }}>
             <div className="flex justify-around lg:justify-center items-center h-16" style={{ gap: '1rem' }}>
               <NavItem to="/" icon={Home} label="Home" />
-              <NavItem to="/lessons" icon={BookOpen} label="Lessons" />
               <NavItem to="/phrases" icon={MessageCircle} label="Phrases" />
               <NavItem to="/practice" icon={GraduationCap} label="Practice" />
               <NavItem to="/progress" icon={Trophy} label="Progress" />

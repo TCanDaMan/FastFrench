@@ -56,7 +56,7 @@ export const Modal = ({
         <>
           {/* Backdrop */}
           <motion.div
-            className="fixed inset-0 bg-black/50 z-40"
+            className="fixed inset-0 bg-black/70 backdrop-blur-sm z-40"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -66,7 +66,7 @@ export const Modal = ({
           {/* Modal */}
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
             <motion.div
-              className={`bg-white rounded-2xl shadow-2xl w-full ${sizeClasses[size]} relative`}
+              className={`bg-zinc-900 border border-zinc-700 rounded-2xl shadow-2xl w-full ${sizeClasses[size]} relative`}
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
@@ -74,15 +74,15 @@ export const Modal = ({
             >
               {/* Header */}
               {(title || showCloseButton) && (
-                <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
-                  {title && <h2 className="text-xl font-bold text-primary-900">{title}</h2>}
+                <div className="flex items-center justify-between px-6 py-4 border-b border-zinc-800">
+                  {title && <h2 className="text-xl font-bold text-white">{title}</h2>}
                   {showCloseButton && (
                     <IconButton
                       icon={X}
                       onClick={onClose}
                       variant="ghost"
                       size="sm"
-                      className="ml-auto"
+                      className="ml-auto text-zinc-400 hover:text-white"
                     />
                   )}
                 </div>

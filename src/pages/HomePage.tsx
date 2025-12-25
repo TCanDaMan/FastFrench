@@ -1,16 +1,17 @@
 import { motion } from 'framer-motion'
-import { Sparkles, ArrowRight, Flame, BookOpen, Brain, MessageCircle, Trophy, Target, User } from 'lucide-react'
+import { Sparkles, ArrowRight, Flame, Brain, MessageCircle, Trophy, Target, User } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
+import { useGamification } from '../hooks/useGamification'
 
 export default function HomePage() {
   const navigate = useNavigate()
   const { profile } = useAuth()
+  const { dailyProgress } = useGamification()
 
   const displayName = profile?.display_name || 'Learner'
   const totalXp = profile?.total_xp || 0
   const currentStreak = profile?.current_streak || 0
-  const dailyGoal = profile?.daily_xp_goal || 20
 
   return (
     <div className="min-h-screen w-full bg-zinc-950 text-white" style={{ paddingBottom: '6rem', paddingTop: '5rem' }}>
@@ -23,9 +24,12 @@ export default function HomePage() {
           className="mb-6"
         >
           <div className="flex items-center gap-4 mb-2">
-            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
-              <User className="w-6 h-6 text-white" />
-            </div>
+            <button
+              onClick={() => navigate('/profile')}
+              className="w-12 h-12 rounded-full bg-gradient-to-br from-gold-500 to-gold-600 flex items-center justify-center hover:shadow-glow-gold transition-shadow"
+            >
+              <User className="w-6 h-6 text-zinc-950" />
+            </button>
             <div>
               <p className="text-zinc-400 text-sm">Welcome back</p>
               <h1 className="text-2xl font-bold">Bonjour, {displayName}!</h1>
@@ -58,7 +62,7 @@ export default function HomePage() {
           <div className="bg-zinc-900 rounded-2xl p-4 border border-zinc-700">
             <div className="flex items-center gap-2 text-emerald-400 mb-1">
               <Target className="w-5 h-5" />
-              <span className="text-2xl font-bold">0/{dailyGoal}</span>
+              <span className="text-2xl font-bold">{dailyProgress.current}/{dailyProgress.goal}</span>
             </div>
             <p className="text-xs text-zinc-400">Daily Goal</p>
           </div>
@@ -86,7 +90,7 @@ export default function HomePage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="grid grid-cols-2 lg:grid-cols-4 mb-6"
+          className="grid grid-cols-3 mb-6"
           style={{ gap: '1rem' }}
         >
           <button
@@ -112,17 +116,6 @@ export default function HomePage() {
           </button>
 
           <button
-            onClick={() => navigate('/lessons')}
-            className="bg-zinc-900 rounded-2xl p-5 text-left border border-zinc-700 hover:border-emerald-500 hover:bg-zinc-800 hover:scale-[1.02] transition-all active:scale-[0.98]"
-          >
-            <div className="w-12 h-12 rounded-xl bg-emerald-500/20 flex items-center justify-center mb-3">
-              <BookOpen className="w-6 h-6 text-emerald-400" />
-            </div>
-            <h3 className="font-semibold text-white mb-0.5">Lessons</h3>
-            <p className="text-sm text-zinc-400">Structured learning</p>
-          </button>
-
-          <button
             onClick={() => navigate('/progress')}
             className="bg-zinc-900 rounded-2xl p-5 text-left border border-zinc-700 hover:border-amber-500 hover:bg-zinc-800 hover:scale-[1.02] transition-all active:scale-[0.98]"
           >
@@ -141,7 +134,7 @@ export default function HomePage() {
           transition={{ delay: 0.25 }}
           whileTap={{ scale: 0.98 }}
           onClick={() => navigate('/practice')}
-          className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-semibold py-4 rounded-xl transition-all flex items-center justify-center gap-2"
+          className="w-full gradient-gold hover:shadow-glow-gold text-zinc-950 font-semibold py-4 rounded-xl transition-all flex items-center justify-center gap-2"
         >
           Start Learning
           <ArrowRight className="w-5 h-5" />

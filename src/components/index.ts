@@ -18,8 +18,6 @@ export type { IconButtonVariant, IconButtonSize } from './IconButton';
 export { ToastProvider, useToast } from './Toast';
 export type { ToastVariant } from './Toast';
 
-export { Navbar } from './Navbar';
-
 export { Skeleton, SkeletonCard, SkeletonText } from './Skeleton';
 
 export { Confetti } from './Confetti';

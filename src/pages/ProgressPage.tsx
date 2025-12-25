@@ -1,13 +1,14 @@
 import { motion } from 'framer-motion'
-import { Flame, Trophy, Target, BookOpen, Calendar } from 'lucide-react'
+import { Flame, Trophy, Target, MessageCircle, Calendar } from 'lucide-react'
 import { useAuth } from '../hooks/useAuth'
+import { useGamification } from '../hooks/useGamification'
 
 export default function ProgressPage() {
   const { profile } = useAuth()
+  const { dailyProgress, stats, achievements } = useGamification()
 
   const currentStreak = profile?.current_streak || 0
   const totalXp = profile?.total_xp || 0
-  const dailyGoal = profile?.daily_xp_goal || 20
 
   // Placeholder weekly data - would come from API in real app
   const weeklyData = [
@@ -20,7 +21,7 @@ export default function ProgressPage() {
     { day: 'S', xp: 0 },
   ]
 
-  const maxXp = Math.max(...weeklyData.map(d => d.xp), dailyGoal)
+  const maxXp = Math.max(...weeklyData.map(d => d.xp), dailyProgress.goal)
 
   return (
     <div className="min-h-screen bg-zinc-950 text-white" style={{ paddingBottom: '5rem', paddingTop: '5rem' }}>
@@ -55,18 +56,18 @@ export default function ProgressPage() {
           <StatCard
             icon={Target}
             title="Daily Goal"
-            value={`0/${dailyGoal}`}
+            value={`${dailyProgress.current}/${dailyProgress.goal}`}
             subtitle="XP today"
             iconColor="text-emerald-400"
             iconBg="bg-emerald-500/20"
           />
           <StatCard
-            icon={BookOpen}
-            title="Lessons"
-            value="1/5"
-            subtitle="completed"
-            iconColor="text-indigo-400"
-            iconBg="bg-indigo-500/20"
+            icon={MessageCircle}
+            title="Phrases"
+            value={`${stats.phrases_practiced}`}
+            subtitle="practiced"
+            iconColor="text-purple-400"
+            iconBg="bg-purple-500/20"
           />
         </div>
 
@@ -100,7 +101,7 @@ export default function ProgressPage() {
                       className={`w-full rounded-t-lg ${
                         isToday
                           ? 'bg-gradient-to-t from-indigo-600 to-purple-500'
-                          : data.xp >= dailyGoal
+                          : data.xp >= dailyProgress.goal
                             ? 'bg-gradient-to-t from-emerald-600 to-emerald-400'
                             : 'bg-zinc-700'
                       }`}
@@ -127,26 +128,41 @@ export default function ProgressPage() {
           </div>
         </motion.div>
 
-        {/* Achievements Preview */}
+        {/* Achievements */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
           className="bg-zinc-900 border border-zinc-700 rounded-2xl p-6"
         >
-          <h2 className="text-xl font-semibold text-white mb-4">Achievements</h2>
-          <p className="text-zinc-400 text-center py-8">
-            Complete lessons and practice sessions to earn achievements!
-          </p>
-          <div className="grid grid-cols-4" style={{ gap: '1rem' }}>
-            {[1, 2, 3, 4].map((i) => (
-              <div
-                key={i}
-                className="aspect-square bg-zinc-800 rounded-xl flex items-center justify-center"
-              >
-                <span className="text-3xl opacity-30">🏆</span>
-              </div>
-            ))}
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-semibold text-white">Achievements</h2>
+            <span className="text-sm text-zinc-400">
+              {achievements.filter(a => a.unlocked).length}/{achievements.length} unlocked
+            </span>
+          </div>
+          <div className="grid grid-cols-4 sm:grid-cols-6" style={{ gap: '1rem' }}>
+            {achievements.length > 0 ? (
+              achievements.slice(0, 8).map((achievement) => (
+                <div
+                  key={achievement.id}
+                  className={`aspect-square rounded-xl flex items-center justify-center ${
+                    achievement.unlocked
+                      ? 'bg-gold-500/20 border border-gold-500/50'
+                      : 'bg-zinc-800'
+                  }`}
+                  title={achievement.unlocked ? achievement.name : 'Locked'}
+                >
+                  <span className={`text-3xl ${achievement.unlocked ? '' : 'opacity-30 grayscale'}`}>
+                    🏆
+                  </span>
+                </div>
+              ))
+            ) : (
+              <p className="col-span-4 sm:col-span-6 text-zinc-500 text-center py-4">
+                Practice to unlock achievements!
+              </p>
+            )}
           </div>
         </motion.div>
       </div>
