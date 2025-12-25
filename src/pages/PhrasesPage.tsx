@@ -155,13 +155,13 @@ export default function PhrasesPage() {
           </div>
 
           {/* Filter and Sort */}
-          <div className="flex items-center gap-3 overflow-x-auto pb-2">
-            <div className="flex items-center gap-2">
-              <Filter className="w-4 h-4 text-zinc-500" />
+          <div className="flex items-center gap-4 overflow-x-auto pb-2">
+            <div className="flex items-center gap-2.5">
+              <Filter className="w-5 h-5 text-zinc-500" />
               <select
                 value={filterCategory}
                 onChange={(e) => setFilterCategory(e.target.value as PhraseCategory | 'all')}
-                className="text-sm border border-zinc-700 rounded-lg px-3 py-1.5 bg-zinc-800 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="text-sm border border-zinc-700 rounded-xl px-4 py-2.5 bg-zinc-800 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
               >
                 <option value="all">All Categories</option>
                 {categories.map((cat) => (
@@ -172,12 +172,12 @@ export default function PhrasesPage() {
               </select>
             </div>
 
-            <div className="flex items-center gap-2">
-              <SortAsc className="w-4 h-4 text-zinc-500" />
+            <div className="flex items-center gap-2.5">
+              <SortAsc className="w-5 h-5 text-zinc-500" />
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as SortBy)}
-                className="text-sm border border-zinc-700 rounded-lg px-3 py-1.5 bg-zinc-800 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="text-sm border border-zinc-700 rounded-xl px-4 py-2.5 bg-zinc-800 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
               >
                 <option value="difficulty">By Difficulty</option>
                 <option value="alphabetical">Alphabetical</option>
@@ -191,8 +191,8 @@ export default function PhrasesPage() {
       {/* Main Content */}
       <div className="px-4 sm:px-6 lg:px-8 py-6" style={{ maxWidth: '72rem', marginInline: 'auto' }}>
         {/* Category Pills */}
-        <h2 className="text-lg font-bold text-white mb-3">Browse by Category</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 mb-8" style={{ gap: '1rem' }}>
+        <h2 className="text-xl font-bold text-white mb-4">Browse by Category</h2>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 mb-10" style={{ gap: '1.25rem' }}>
           {categories.map((category) => {
             const info = CATEGORY_INFO[category];
             const progress = getCategoryProgress(category);
@@ -205,15 +205,15 @@ export default function PhrasesPage() {
                 onClick={() => handleCategoryClick(category)}
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
-                className="bg-zinc-900 border border-zinc-700 rounded-xl px-4 py-4 text-center hover:border-zinc-600 hover:bg-zinc-800/50 transition-all overflow-visible"
+                className="bg-zinc-900 border border-zinc-700 rounded-xl px-5 py-5 text-center hover:border-zinc-600 hover:bg-zinc-800/50 transition-all overflow-visible shadow-md shadow-black/10"
               >
-                <div className="text-2xl mb-2">{info.emoji}</div>
-                <div className="text-sm font-semibold text-white mb-1">{info.name}</div>
-                <div className="text-xs text-zinc-500">
+                <div className="text-3xl mb-3">{info.emoji}</div>
+                <div className="text-base font-semibold text-white mb-1.5">{info.name}</div>
+                <div className="text-sm text-zinc-500">
                   {progress.learned}/{progress.total}
                 </div>
                 {/* Mini progress bar */}
-                <div className="w-full bg-zinc-800 rounded-full h-1.5 mt-3">
+                <div className="w-full bg-zinc-800 rounded-full h-2 mt-4">
                   <div
                     className={`h-full rounded-full ${PROGRESS_BAR_COLORS[info.color] || 'bg-indigo-500'}`}
                     style={{ width: `${progressPercent}%` }}
@@ -225,34 +225,34 @@ export default function PhrasesPage() {
         </div>
 
         {/* Scenarios Section */}
-        <div className="mb-8">
-          <div className="flex items-center gap-2 mb-3">
-            <Sparkles className="w-5 h-5 text-amber-500" />
-            <h2 className="text-lg font-bold text-white">Practice Scenarios</h2>
+        <div className="mb-10">
+          <div className="flex items-center gap-2.5 mb-4">
+            <Sparkles className="w-6 h-6 text-amber-500" />
+            <h2 className="text-xl font-bold text-white">Practice Scenarios</h2>
           </div>
-          <p className="text-sm text-zinc-400 mb-4">
+          <p className="text-base text-zinc-400 mb-5">
             Real-world situations to test your French skills
           </p>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2" style={{ gap: '1rem' }}>
+          <div className="grid grid-cols-1 sm:grid-cols-2" style={{ gap: '1.5rem' }}>
             {SCENARIOS.map((scenario) => (
               <motion.button
                 key={scenario.id}
                 onClick={() => handleStartScenario(scenario.id)}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="bg-zinc-900 rounded-xl p-5 text-left hover:bg-zinc-800 transition-all border border-zinc-700"
+                className="bg-zinc-900 rounded-xl p-6 text-left hover:bg-zinc-800 transition-all border border-zinc-700 shadow-lg shadow-black/20"
               >
-                <div className="flex items-start gap-3">
-                  <div className="text-3xl">{scenario.icon}</div>
+                <div className="flex items-start gap-4">
+                  <div className="text-4xl">{scenario.icon}</div>
                   <div className="flex-1">
-                    <h3 className="font-bold text-white mb-1">{scenario.title}</h3>
-                    <p className="text-sm text-zinc-400 mb-2">{scenario.description}</p>
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs bg-indigo-500/20 text-indigo-400 px-2 py-1 rounded">
+                    <h3 className="font-bold text-white text-lg mb-1.5">{scenario.title}</h3>
+                    <p className="text-sm text-zinc-400 mb-3">{scenario.description}</p>
+                    <div className="flex items-center gap-3">
+                      <span className="text-sm bg-indigo-500/20 text-indigo-400 px-3 py-1.5 rounded-lg">
                         {scenario.phraseIds.length} phrases
                       </span>
-                      <span className="text-xs bg-zinc-700 text-zinc-300 px-2 py-1 rounded">
+                      <span className="text-sm bg-zinc-700 text-zinc-300 px-3 py-1.5 rounded-lg">
                         Level {scenario.difficulty}
                       </span>
                     </div>
@@ -265,7 +265,7 @@ export default function PhrasesPage() {
 
         {/* All Phrases List */}
         <div>
-          <h2 className="text-lg font-bold text-white mb-3">
+          <h2 className="text-xl font-bold text-white mb-4">
             {searchQuery ? 'Search Results' : 'All Phrases'}{' '}
             <span className="text-zinc-500 font-normal">({filteredPhrases.length})</span>
           </h2>
@@ -275,7 +275,7 @@ export default function PhrasesPage() {
               <p>No phrases found matching your search.</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2" style={{ gap: '1rem' }}>
+            <div className="grid grid-cols-1 md:grid-cols-2" style={{ gap: '1.5rem' }}>
               <AnimatePresence>
                 {filteredPhrases.map((phrase, index) => (
                   <motion.div

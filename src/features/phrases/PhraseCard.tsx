@@ -55,17 +55,17 @@ export default function PhraseCard({
 
   const cardContent = (
     <div
-      className={`relative bg-zinc-900 border border-zinc-700 rounded-2xl hover:border-zinc-600 hover:bg-zinc-800/50 transition-all duration-300 cursor-pointer ${
-        compact ? 'p-4' : 'p-5'
+      className={`relative bg-zinc-900 border border-zinc-700 rounded-2xl shadow-lg shadow-black/20 hover:border-zinc-600 hover:bg-zinc-800/50 hover:shadow-xl hover:shadow-black/30 transition-all duration-300 cursor-pointer ${
+        compact ? 'p-5' : 'p-6'
       }`}
       onClick={onClick || handleFlip}
     >
       {/* Category Badge */}
       {showCategory && (
-        <div className="absolute top-4 right-4 flex items-center gap-2">
-          <span className="text-lg leading-none">{categoryInfo.emoji}</span>
+        <div className="absolute top-5 right-5 flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-zinc-800/60">
+          <span className="text-base leading-none">{categoryInfo.emoji}</span>
           {!compact && (
-            <span className="text-xs font-semibold text-indigo-400">
+            <span className="text-sm font-semibold text-indigo-400">
               {categoryInfo.name}
             </span>
           )}
@@ -73,11 +73,11 @@ export default function PhraseCard({
       )}
 
       {/* Difficulty Stars */}
-      <div className="flex items-center gap-1 mb-3">
+      <div className="flex items-center gap-1.5 mb-4">
         {[...Array(5)].map((_, i) => (
           <Star
             key={i}
-            className={`w-3.5 h-3.5 ${
+            className={`w-4 h-4 ${
               i < phrase.difficulty
                 ? 'fill-amber-400 text-amber-400'
                 : 'fill-zinc-700 text-zinc-700'
@@ -105,37 +105,37 @@ export default function PhraseCard({
             </p>
 
             {/* Phonetic */}
-            <div className={`${compact ? 'mb-3' : 'mb-4'}`}>
-              <span className="font-ipa text-zinc-500 text-sm bg-zinc-800/70 px-2.5 py-1 rounded-md inline-block mb-3">
+            <div className={`${compact ? 'mb-4' : 'mb-5'}`}>
+              <span className="font-ipa text-zinc-400 text-base bg-zinc-800/70 px-3.5 py-1.5 rounded-lg inline-block mb-4">
                 {phrase.phonetic}
               </span>
 
               {/* Audio Controls */}
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-3">
                 <button
                   onClick={(e) => handlePlayAudio(e, 'slow')}
                   disabled={isPlaying}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                  className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all ${
                     isPlaying
                       ? 'bg-zinc-700 text-zinc-500 cursor-not-allowed'
                       : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700 hover:text-white'
                   }`}
                   aria-label="Play slow pronunciation"
                 >
-                  <Turtle className="w-3.5 h-3.5" />
+                  <Turtle className="w-4 h-4" />
                   Slow
                 </button>
                 <button
                   onClick={(e) => handlePlayAudio(e, 'normal')}
                   disabled={isPlaying}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                  className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all ${
                     isPlaying
                       ? 'bg-zinc-700 text-zinc-500 cursor-not-allowed'
                       : 'bg-gold-500/20 text-gold-400 hover:bg-gold-500/30 hover:text-gold-300'
                   }`}
                   aria-label="Play normal pronunciation"
                 >
-                  <Volume2 className="w-3.5 h-3.5" />
+                  <Volume2 className="w-4 h-4" />
                   Normal
                 </button>
               </div>
@@ -181,13 +181,13 @@ export default function PhraseCard({
 
             {/* Comfort Level */}
             {progress && (
-              <div className="mb-4">
-                <p className="text-xs text-zinc-400 mb-2">Your Comfort Level</p>
-                <div className="flex gap-1">
+              <div className="mb-5">
+                <p className="text-sm text-zinc-400 mb-2">Your Comfort Level</p>
+                <div className="flex gap-1.5">
                   {[1, 2, 3, 4, 5].map((level) => (
                     <div
                       key={level}
-                      className={`h-2 flex-1 rounded ${
+                      className={`h-2.5 flex-1 rounded ${
                         progress.comfortLevel >= level ? 'bg-emerald-500' : 'bg-zinc-700'
                       }`}
                     />
