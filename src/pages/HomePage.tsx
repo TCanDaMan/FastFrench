@@ -14,7 +14,7 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen w-full bg-zinc-950 text-white" style={{ paddingBottom: '6rem', paddingTop: '5rem' }}>
-      <div className="max-w-xl px-4" style={{ marginInline: 'auto' }}>
+      <div className="px-4 sm:px-6 lg:px-8" style={{ maxWidth: '64rem', marginInline: 'auto' }}>
 
         {/* Welcome Header */}
         <motion.div
@@ -38,7 +38,8 @@ export default function HomePage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="grid grid-cols-3 gap-3 mb-6"
+          className="grid grid-cols-2 sm:grid-cols-3 mb-6"
+          style={{ gap: '0.75rem' }}
         >
           <div className="bg-zinc-900 rounded-2xl p-4 border border-zinc-700">
             <div className="flex items-center gap-2 text-orange-400 mb-1">
@@ -85,11 +86,12 @@ export default function HomePage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="grid grid-cols-2 gap-3 mb-6"
+          className="grid grid-cols-2 lg:grid-cols-4 mb-6"
+          style={{ gap: '0.75rem' }}
         >
           <button
             onClick={() => navigate('/practice')}
-            className="bg-zinc-900 rounded-2xl p-5 text-left border border-zinc-700 hover:border-indigo-500 hover:bg-zinc-800/50 transition-all active:scale-[0.98]"
+            className="bg-zinc-900 rounded-2xl p-5 text-left border border-zinc-700 hover:border-indigo-500 hover:bg-zinc-800 hover:scale-[1.02] transition-all active:scale-[0.98]"
           >
             <div className="w-12 h-12 rounded-xl bg-indigo-500/20 flex items-center justify-center mb-3">
               <Brain className="w-6 h-6 text-indigo-400" />
@@ -100,7 +102,7 @@ export default function HomePage() {
 
           <button
             onClick={() => navigate('/phrases')}
-            className="bg-zinc-900 rounded-2xl p-5 text-left border border-zinc-700 hover:border-purple-500 hover:bg-zinc-800/50 transition-all active:scale-[0.98]"
+            className="bg-zinc-900 rounded-2xl p-5 text-left border border-zinc-700 hover:border-purple-500 hover:bg-zinc-800 hover:scale-[1.02] transition-all active:scale-[0.98]"
           >
             <div className="w-12 h-12 rounded-xl bg-purple-500/20 flex items-center justify-center mb-3">
               <MessageCircle className="w-6 h-6 text-purple-400" />
@@ -111,7 +113,7 @@ export default function HomePage() {
 
           <button
             onClick={() => navigate('/lessons')}
-            className="bg-zinc-900 rounded-2xl p-5 text-left border border-zinc-700 hover:border-emerald-500 hover:bg-zinc-800/50 transition-all active:scale-[0.98]"
+            className="bg-zinc-900 rounded-2xl p-5 text-left border border-zinc-700 hover:border-emerald-500 hover:bg-zinc-800 hover:scale-[1.02] transition-all active:scale-[0.98]"
           >
             <div className="w-12 h-12 rounded-xl bg-emerald-500/20 flex items-center justify-center mb-3">
               <BookOpen className="w-6 h-6 text-emerald-400" />
@@ -122,7 +124,7 @@ export default function HomePage() {
 
           <button
             onClick={() => navigate('/progress')}
-            className="bg-zinc-900 rounded-2xl p-5 text-left border border-zinc-700 hover:border-amber-500 hover:bg-zinc-800/50 transition-all active:scale-[0.98]"
+            className="bg-zinc-900 rounded-2xl p-5 text-left border border-zinc-700 hover:border-amber-500 hover:bg-zinc-800 hover:scale-[1.02] transition-all active:scale-[0.98]"
           >
             <div className="w-12 h-12 rounded-xl bg-amber-500/20 flex items-center justify-center mb-3">
               <Trophy className="w-6 h-6 text-amber-400" />

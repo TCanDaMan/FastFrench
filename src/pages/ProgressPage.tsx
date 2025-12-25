@@ -1,43 +1,72 @@
 import { motion } from 'framer-motion'
-import { TrendingUp, Award, Target } from 'lucide-react'
+import { Flame, Trophy, Target, BookOpen, Calendar } from 'lucide-react'
+import { useAuth } from '../hooks/useAuth'
 
 export default function ProgressPage() {
+  const { profile } = useAuth()
+
+  const currentStreak = profile?.current_streak || 0
+  const totalXp = profile?.total_xp || 0
+  const dailyGoal = profile?.daily_xp_goal || 20
+
+  // Placeholder weekly data - would come from API in real app
+  const weeklyData = [
+    { day: 'M', xp: 15 },
+    { day: 'T', xp: 25 },
+    { day: 'W', xp: 10 },
+    { day: 'T', xp: 30 },
+    { day: 'F', xp: 20 },
+    { day: 'S', xp: 5 },
+    { day: 'S', xp: 0 },
+  ]
+
+  const maxXp = Math.max(...weeklyData.map(d => d.xp), dailyGoal)
+
   return (
-    <div className="min-h-screen pb-20 lg:pb-8 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md sm:max-w-2xl lg:max-w-4xl mx-auto pt-8 lg:pt-20">
-        <motion.h1
+    <div className="min-h-screen bg-zinc-950 text-white" style={{ paddingBottom: '5rem', paddingTop: '5rem' }}>
+      <div className="px-4 sm:px-6 lg:px-8" style={{ maxWidth: '64rem', marginInline: 'auto' }}>
+        <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-3xl font-bold text-gray-900 mb-6"
+          className="mb-8"
         >
-          Your Progress
-        </motion.h1>
+          <h1 className="text-3xl font-bold text-white mb-2">Your Progress</h1>
+          <p className="text-zinc-400">Track your French learning journey</p>
+        </motion.div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-2 gap-4 mb-8">
+        <div className="grid grid-cols-2 lg:grid-cols-4 mb-8" style={{ gap: '1rem' }}>
           <StatCard
-            icon={TrendingUp}
-            title="Streak"
-            value="0 days"
-            color="from-primary-500 to-primary-600"
+            icon={Flame}
+            title="Day Streak"
+            value={`${currentStreak}`}
+            subtitle="days"
+            iconColor="text-orange-400"
+            iconBg="bg-orange-500/20"
           />
           <StatCard
-            icon={Award}
+            icon={Trophy}
             title="Total XP"
-            value="0"
-            color="from-accent-500 to-accent-600"
+            value={`${totalXp}`}
+            subtitle="points"
+            iconColor="text-yellow-400"
+            iconBg="bg-yellow-500/20"
           />
           <StatCard
             icon={Target}
-            title="Lessons"
-            value="0/50"
-            color="from-yellow-500 to-yellow-600"
+            title="Daily Goal"
+            value={`0/${dailyGoal}`}
+            subtitle="XP today"
+            iconColor="text-emerald-400"
+            iconBg="bg-emerald-500/20"
           />
           <StatCard
-            icon={Award}
-            title="Achievements"
-            value="0/20"
-            color="from-green-500 to-green-600"
+            icon={BookOpen}
+            title="Lessons"
+            value="1/5"
+            subtitle="completed"
+            iconColor="text-indigo-400"
+            iconBg="bg-indigo-500/20"
           />
         </div>
 
@@ -46,17 +75,76 @@ export default function ProgressPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="bg-white rounded-2xl shadow-lg p-6"
+          className="bg-zinc-900 border border-zinc-700 rounded-2xl p-6 mb-6"
         >
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">Weekly Activity</h2>
-          <div className="flex justify-between items-end h-32">
-            {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((day) => (
-              <div key={day} className="flex flex-col items-center gap-2">
-                <div
-                  className="w-8 bg-gray-200 rounded-t"
-                  style={{ height: `${Math.random() * 100}%` }}
-                />
-                <span className="text-xs text-gray-600">{day}</span>
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-xl font-semibold text-white">Weekly Activity</h2>
+            <div className="flex items-center gap-2 text-zinc-400 text-sm">
+              <Calendar className="w-4 h-4" />
+              This week
+            </div>
+          </div>
+
+          <div className="flex justify-between items-end" style={{ height: '10rem', gap: '0.5rem' }}>
+            {weeklyData.map((data, index) => {
+              const height = maxXp > 0 ? (data.xp / maxXp) * 100 : 0
+              const isToday = index === new Date().getDay() - 1 || (index === 6 && new Date().getDay() === 0)
+
+              return (
+                <div key={index} className="flex flex-col items-center flex-1" style={{ gap: '0.5rem' }}>
+                  <div className="w-full flex flex-col justify-end" style={{ height: '8rem' }}>
+                    <motion.div
+                      initial={{ height: 0 }}
+                      animate={{ height: `${height}%` }}
+                      transition={{ delay: index * 0.1, duration: 0.5 }}
+                      className={`w-full rounded-t-lg ${
+                        isToday
+                          ? 'bg-gradient-to-t from-indigo-600 to-purple-500'
+                          : data.xp >= dailyGoal
+                            ? 'bg-gradient-to-t from-emerald-600 to-emerald-400'
+                            : 'bg-zinc-700'
+                      }`}
+                      style={{ minHeight: data.xp > 0 ? '0.5rem' : '0' }}
+                    />
+                  </div>
+                  <span className={`text-xs font-medium ${isToday ? 'text-indigo-400' : 'text-zinc-500'}`}>
+                    {data.day}
+                  </span>
+                </div>
+              )
+            })}
+          </div>
+
+          <div className="flex items-center justify-center gap-6 mt-6 pt-4 border-t border-zinc-700">
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded bg-gradient-to-t from-emerald-600 to-emerald-400" />
+              <span className="text-xs text-zinc-400">Goal met</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded bg-gradient-to-t from-indigo-600 to-purple-500" />
+              <span className="text-xs text-zinc-400">Today</span>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Achievements Preview */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="bg-zinc-900 border border-zinc-700 rounded-2xl p-6"
+        >
+          <h2 className="text-xl font-semibold text-white mb-4">Achievements</h2>
+          <p className="text-zinc-400 text-center py-8">
+            Complete lessons and practice sessions to earn achievements!
+          </p>
+          <div className="grid grid-cols-4" style={{ gap: '1rem' }}>
+            {[1, 2, 3, 4].map((i) => (
+              <div
+                key={i}
+                className="aspect-square bg-zinc-800 rounded-xl flex items-center justify-center"
+              >
+                <span className="text-3xl opacity-30">🏆</span>
               </div>
             ))}
           </div>
@@ -70,21 +158,24 @@ interface StatCardProps {
   icon: React.ElementType
   title: string
   value: string
-  color: string
+  subtitle: string
+  iconColor: string
+  iconBg: string
 }
 
-function StatCard({ icon: Icon, title, value, color }: StatCardProps) {
+function StatCard({ icon: Icon, title, value, subtitle, iconColor, iconBg }: StatCardProps) {
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
-      className="bg-white rounded-xl shadow-lg p-4"
+      className="bg-zinc-900 border border-zinc-700 rounded-2xl p-5"
     >
-      <div className={`inline-flex p-2 rounded-lg bg-gradient-to-r ${color} mb-2`}>
-        <Icon className="w-5 h-5 text-white" />
+      <div className={`inline-flex p-3 rounded-xl ${iconBg} mb-3`}>
+        <Icon className={`w-6 h-6 ${iconColor}`} />
       </div>
-      <div className="text-sm text-gray-600 mb-1">{title}</div>
-      <div className="text-2xl font-bold text-gray-900">{value}</div>
+      <div className="text-sm text-zinc-400 mb-1">{title}</div>
+      <div className="text-3xl font-bold text-white">{value}</div>
+      <div className="text-xs text-zinc-500">{subtitle}</div>
     </motion.div>
   )
 }

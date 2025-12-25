@@ -66,24 +66,24 @@ export default function PracticePage() {
   const practiceWords = getPracticeWords()
 
   return (
-    <div className="min-h-screen pb-20 lg:pb-8 bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-900 dark:to-gray-800">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:pt-20">
+    <div className="min-h-screen bg-zinc-950 text-white" style={{ paddingBottom: '5rem', paddingTop: '5rem' }}>
+      <div className="px-4 sm:px-6 lg:px-8" style={{ maxWidth: '80rem', marginInline: 'auto' }}>
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">Practice</h1>
-          <p className="text-gray-600 dark:text-gray-400">
+          <h1 className="text-4xl font-bold text-white mb-2">Practice</h1>
+          <p className="text-zinc-400">
             Master French vocabulary with spaced repetition
           </p>
         </div>
 
         {/* View Tabs */}
-        <div className="flex gap-2 mb-8">
+        <div className="flex mb-8" style={{ gap: '0.5rem' }}>
           <button
             onClick={() => setView('selection')}
             className={`px-6 py-3 rounded-xl font-semibold transition-all ${
               view === 'selection'
-                ? 'bg-blue-600 text-white shadow-lg scale-105'
-                : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                ? 'bg-indigo-600 text-white shadow-lg scale-105'
+                : 'bg-zinc-900 border border-zinc-700 text-zinc-300 hover:bg-zinc-800 hover:text-white'
             }`}
           >
             Practice
@@ -92,8 +92,8 @@ export default function PracticePage() {
             onClick={() => setView('browse')}
             className={`px-6 py-3 rounded-xl font-semibold transition-all ${
               view === 'browse'
-                ? 'bg-blue-600 text-white shadow-lg scale-105'
-                : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                ? 'bg-indigo-600 text-white shadow-lg scale-105'
+                : 'bg-zinc-900 border border-zinc-700 text-zinc-300 hover:bg-zinc-800 hover:text-white'
             }`}
           >
             Browse
@@ -109,7 +109,7 @@ export default function PracticePage() {
               exit={{ opacity: 0, y: -20 }}
             >
               {/* Daily Stats */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+              <div className="grid grid-cols-2 md:grid-cols-4 mb-8" style={{ gap: '1rem' }}>
                 <StatCard
                   icon="📚"
                   label="Total Words"
@@ -137,7 +137,7 @@ export default function PracticePage() {
               </div>
 
               {/* Practice Options */}
-              <div className="grid md:grid-cols-2 gap-6 mb-8">
+              <div className="grid md:grid-cols-2 mb-8" style={{ gap: '1.5rem' }}>
                 {/* Review Due Words */}
                 <PracticeModeCard
                   icon="🔴"
@@ -162,11 +162,11 @@ export default function PracticePage() {
               </div>
 
               {/* Practice by Category */}
-              <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg">
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+              <div className="bg-zinc-900 border border-zinc-700 rounded-2xl p-6">
+                <h2 className="text-xl font-bold text-white mb-4">
                   Practice by Category
                 </h2>
-                <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+                <div className="grid grid-cols-2 md:grid-cols-5" style={{ gap: '0.75rem' }}>
                   {(Object.keys(CATEGORY_INFO) as VocabularyCategory[]).map((category) => {
                     const info = CATEGORY_INFO[category]
                     const categoryWords = getWordsByCategory(category)
@@ -177,7 +177,7 @@ export default function PracticePage() {
                         disabled={categoryWords.length === 0}
                         className={`p-4 rounded-xl text-center transition-all ${
                           categoryWords.length === 0
-                            ? 'bg-gray-100 dark:bg-gray-700 opacity-50 cursor-not-allowed'
+                            ? 'bg-zinc-800 opacity-50 cursor-not-allowed'
                             : 'bg-gradient-to-br ' + info.color + ' hover:scale-105 shadow-lg'
                         }`}
                       >
@@ -202,7 +202,7 @@ export default function PracticePage() {
               {/* Back Button */}
               <button
                 onClick={() => setView('selection')}
-                className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white mb-6"
+                className="flex items-center gap-2 text-zinc-400 hover:text-white mb-6"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
@@ -220,15 +220,15 @@ export default function PracticePage() {
               ) : (
                 <div className="text-center py-12">
                   <div className="text-6xl mb-4">🎉</div>
-                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                  <h2 className="text-2xl font-bold text-white mb-2">
                     No words available
                   </h2>
-                  <p className="text-gray-600 dark:text-gray-400 mb-4">
+                  <p className="text-zinc-400 mb-4">
                     Try a different practice mode or category
                   </p>
                   <button
                     onClick={() => setView('selection')}
-                    className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-semibold"
+                    className="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-semibold"
                   >
                     Back to Practice Options
                   </button>
@@ -310,19 +310,19 @@ function PracticeModeCard({
       whileTap={{ scale: disabled ? 1 : 0.98 }}
       onClick={onClick}
       disabled={disabled}
-      className={`bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg text-left transition-all ${
-        disabled ? 'opacity-50 cursor-not-allowed' : 'hover:shadow-xl'
+      className={`bg-zinc-900 border border-zinc-700 rounded-2xl p-6 text-left transition-all ${
+        disabled ? 'opacity-50 cursor-not-allowed' : 'hover:border-zinc-600 hover:bg-zinc-800'
       }`}
     >
       <div className={`inline-block p-4 rounded-2xl bg-gradient-to-br ${gradient} mb-4`}>
         <span className="text-4xl">{icon}</span>
       </div>
-      <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{title}</h3>
-      <p className="text-gray-600 dark:text-gray-400 mb-4">{description}</p>
+      <h3 className="text-xl font-bold text-white mb-2">{title}</h3>
+      <p className="text-zinc-400 mb-4">{description}</p>
       <div className="flex items-center justify-between">
-        <span className="text-2xl font-bold text-gray-900 dark:text-white">{count} words</span>
+        <span className="text-2xl font-bold text-white">{count} words</span>
         {!disabled && (
-          <div className="flex items-center gap-2 text-blue-600 dark:text-blue-400 font-semibold">
+          <div className="flex items-center gap-2 text-indigo-400 font-semibold">
             Start
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
@@ -355,54 +355,54 @@ function SessionSummaryModal({
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+        className="absolute inset-0 bg-black/70 backdrop-blur-sm"
         onClick={onClose}
       />
 
       <motion.div
         initial={{ opacity: 0, scale: 0.9, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
-        className="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-md w-full p-8 text-center"
+        className="relative bg-zinc-900 border border-zinc-700 rounded-2xl shadow-2xl max-w-md w-full p-8 text-center"
       >
         <div className="text-6xl mb-4">🎉</div>
-        <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+        <h2 className="text-3xl font-bold text-white mb-2">
           Session Complete!
         </h2>
-        <p className="text-gray-600 dark:text-gray-400 mb-6">Great job practicing!</p>
+        <p className="text-zinc-400 mb-6">Great job practicing!</p>
 
-        <div className="grid grid-cols-2 gap-4 mb-6">
-          <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-4">
-            <div className="text-3xl font-bold text-blue-600 dark:text-blue-400">
+        <div className="grid grid-cols-2 mb-6" style={{ gap: '1rem' }}>
+          <div className="bg-blue-500/20 rounded-xl p-4">
+            <div className="text-3xl font-bold text-blue-400">
               {session.wordsReviewed}
             </div>
-            <div className="text-sm text-gray-600 dark:text-gray-400">Words Reviewed</div>
+            <div className="text-sm text-zinc-400">Words Reviewed</div>
           </div>
 
-          <div className="bg-green-50 dark:bg-green-900/20 rounded-xl p-4">
-            <div className="text-3xl font-bold text-green-600 dark:text-green-400">
+          <div className="bg-green-500/20 rounded-xl p-4">
+            <div className="text-3xl font-bold text-green-400">
               {accuracy}%
             </div>
-            <div className="text-sm text-gray-600 dark:text-gray-400">Accuracy</div>
+            <div className="text-sm text-zinc-400">Accuracy</div>
           </div>
 
-          <div className="bg-purple-50 dark:bg-purple-900/20 rounded-xl p-4">
-            <div className="text-3xl font-bold text-purple-600 dark:text-purple-400">
+          <div className="bg-purple-500/20 rounded-xl p-4">
+            <div className="text-3xl font-bold text-purple-400">
               +{session.xpEarned}
             </div>
-            <div className="text-sm text-gray-600 dark:text-gray-400">XP Earned</div>
+            <div className="text-sm text-zinc-400">XP Earned</div>
           </div>
 
-          <div className="bg-yellow-50 dark:bg-yellow-900/20 rounded-xl p-4">
-            <div className="text-3xl font-bold text-yellow-600 dark:text-yellow-400">
+          <div className="bg-yellow-500/20 rounded-xl p-4">
+            <div className="text-3xl font-bold text-yellow-400">
               {session.correctAnswers}/{session.wordsReviewed}
             </div>
-            <div className="text-sm text-gray-600 dark:text-gray-400">Correct</div>
+            <div className="text-sm text-zinc-400">Correct</div>
           </div>
         </div>
 
         <button
           onClick={onClose}
-          className="w-full px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-semibold transition-colors"
+          className="w-full px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-semibold transition-colors"
         >
           Continue
         </button>

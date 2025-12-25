@@ -12,6 +12,19 @@ import ScenarioMode from '../features/phrases/ScenarioMode';
 type View = 'browse' | 'category-details' | 'practice' | 'scenario';
 type SortBy = 'difficulty' | 'alphabetical' | 'most-practiced';
 
+// Color mapping for progress bars
+const PROGRESS_BAR_COLORS: Record<string, string> = {
+  'text-blue-600': 'bg-blue-500',
+  'text-purple-600': 'bg-purple-500',
+  'text-amber-600': 'bg-amber-500',
+  'text-green-600': 'bg-green-500',
+  'text-indigo-600': 'bg-indigo-500',
+  'text-pink-600': 'bg-pink-500',
+  'text-teal-600': 'bg-teal-500',
+  'text-red-600': 'bg-red-500',
+  'text-orange-600': 'bg-orange-500',
+};
+
 export default function PhrasesPage() {
   const { phrases, getTotalPhrases, getLearnedPhrases, getCategoryProgress } = usePhraseStore();
 
@@ -109,20 +122,20 @@ export default function PhrasesPage() {
 
   // Main browse view
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-accent-50 pb-24 lg:pb-8">
+    <div className="min-h-screen bg-zinc-950 text-white" style={{ paddingBottom: '5rem' }}>
       {/* Header */}
-      <div className="bg-white border-b border-gray-200 sticky top-0 lg:top-14 z-10">
-        <div className="max-w-4xl lg:max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div className="bg-zinc-900 border-b border-zinc-800 sticky top-0 lg:top-14 z-10">
+        <div className="px-4 sm:px-6 lg:px-8 py-6" style={{ maxWidth: '72rem', marginInline: 'auto' }}>
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">Phrase Library</h1>
-              <p className="text-sm text-gray-600 mt-1">
+              <h1 className="text-3xl font-bold text-white">Phrase Library</h1>
+              <p className="text-sm text-zinc-400 mt-1">
                 {getLearnedPhrases()} of {getTotalPhrases()} phrases learned
               </p>
             </div>
             <button
               onClick={() => handleStartPractice()}
-              className="bg-primary-600 hover:bg-primary-700 text-white px-6 py-3 rounded-xl font-semibold flex items-center gap-2 shadow-lg"
+              className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl font-semibold flex items-center gap-2 shadow-lg"
             >
               <Play className="w-5 h-5" />
               Practice All
@@ -131,24 +144,24 @@ export default function PhrasesPage() {
 
           {/* Search Bar */}
           <div className="relative mb-4">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-500" />
             <input
               type="text"
               placeholder="Search phrases..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500"
+              className="w-full pl-10 pr-4 py-3 bg-zinc-800 border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
 
           {/* Filter and Sort */}
           <div className="flex items-center gap-3 overflow-x-auto pb-2">
             <div className="flex items-center gap-2">
-              <Filter className="w-4 h-4 text-gray-500" />
+              <Filter className="w-4 h-4 text-zinc-500" />
               <select
                 value={filterCategory}
                 onChange={(e) => setFilterCategory(e.target.value as PhraseCategory | 'all')}
-                className="text-sm border border-gray-200 rounded-lg px-3 py-1.5 bg-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                className="text-sm border border-zinc-700 rounded-lg px-3 py-1.5 bg-zinc-800 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
               >
                 <option value="all">All Categories</option>
                 {categories.map((cat) => (
@@ -160,11 +173,11 @@ export default function PhrasesPage() {
             </div>
 
             <div className="flex items-center gap-2">
-              <SortAsc className="w-4 h-4 text-gray-500" />
+              <SortAsc className="w-4 h-4 text-zinc-500" />
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as SortBy)}
-                className="text-sm border border-gray-200 rounded-lg px-3 py-1.5 bg-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+                className="text-sm border border-zinc-700 rounded-lg px-3 py-1.5 bg-zinc-800 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
               >
                 <option value="difficulty">By Difficulty</option>
                 <option value="alphabetical">Alphabetical</option>
@@ -175,10 +188,11 @@ export default function PhrasesPage() {
         </div>
       </div>
 
-      {/* Category Pills */}
-      <div className="max-w-4xl mx-auto px-4 py-6">
-        <h2 className="text-lg font-bold text-gray-900 mb-3">Browse by Category</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 mb-8">
+      {/* Main Content */}
+      <div className="px-4 sm:px-6 lg:px-8 py-6" style={{ maxWidth: '72rem', marginInline: 'auto' }}>
+        {/* Category Pills */}
+        <h2 className="text-lg font-bold text-white mb-3">Browse by Category</h2>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 mb-8" style={{ gap: '0.75rem' }}>
           {categories.map((category) => {
             const info = CATEGORY_INFO[category];
             const progress = getCategoryProgress(category);
@@ -191,37 +205,17 @@ export default function PhrasesPage() {
                 onClick={() => handleCategoryClick(category)}
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
-                className={`${info.bgColor} rounded-xl p-4 text-center hover:shadow-lg transition-shadow`}
+                className="bg-zinc-900 border border-zinc-700 rounded-xl p-4 text-center hover:border-zinc-600 transition-all"
               >
                 <div className="text-3xl mb-2">{info.emoji}</div>
-                <div className={`text-sm font-semibold ${info.color} mb-1`}>{info.name}</div>
-                <div className="text-xs text-gray-600">
+                <div className="text-sm font-semibold text-white mb-1">{info.name}</div>
+                <div className="text-xs text-zinc-400">
                   {progress.learned}/{progress.total}
                 </div>
                 {/* Mini progress bar */}
-                <div className="w-full bg-white/50 rounded-full h-1 mt-2">
+                <div className="w-full bg-zinc-700 rounded-full h-1 mt-2">
                   <div
-                    className={`h-full rounded-full ${
-                      info.color === 'text-blue-600'
-                        ? 'bg-blue-500'
-                        : info.color === 'text-purple-600'
-                        ? 'bg-purple-500'
-                        : info.color === 'text-amber-600'
-                        ? 'bg-amber-500'
-                        : info.color === 'text-green-600'
-                        ? 'bg-green-500'
-                        : info.color === 'text-indigo-600'
-                        ? 'bg-indigo-500'
-                        : info.color === 'text-pink-600'
-                        ? 'bg-pink-500'
-                        : info.color === 'text-teal-600'
-                        ? 'bg-teal-500'
-                        : info.color === 'text-red-600'
-                        ? 'bg-red-500'
-                        : info.color === 'text-orange-600'
-                        ? 'bg-orange-500'
-                        : 'bg-gray-500'
-                    }`}
+                    className={`h-full rounded-full ${PROGRESS_BAR_COLORS[info.color] || 'bg-indigo-500'}`}
                     style={{ width: `${progressPercent}%` }}
                   />
                 </div>
@@ -234,31 +228,31 @@ export default function PhrasesPage() {
         <div className="mb-8">
           <div className="flex items-center gap-2 mb-3">
             <Sparkles className="w-5 h-5 text-amber-500" />
-            <h2 className="text-lg font-bold text-gray-900">Practice Scenarios</h2>
+            <h2 className="text-lg font-bold text-white">Practice Scenarios</h2>
           </div>
-          <p className="text-sm text-gray-600 mb-4">
+          <p className="text-sm text-zinc-400 mb-4">
             Real-world situations to test your French skills
           </p>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2" style={{ gap: '1rem' }}>
             {SCENARIOS.map((scenario) => (
               <motion.button
                 key={scenario.id}
                 onClick={() => handleStartScenario(scenario.id)}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="bg-white rounded-xl p-5 text-left hover:shadow-lg transition-shadow border border-gray-200"
+                className="bg-zinc-900 rounded-xl p-5 text-left hover:bg-zinc-800 transition-all border border-zinc-700"
               >
                 <div className="flex items-start gap-3">
                   <div className="text-3xl">{scenario.icon}</div>
                   <div className="flex-1">
-                    <h3 className="font-bold text-gray-900 mb-1">{scenario.title}</h3>
-                    <p className="text-sm text-gray-600 mb-2">{scenario.description}</p>
+                    <h3 className="font-bold text-white mb-1">{scenario.title}</h3>
+                    <p className="text-sm text-zinc-400 mb-2">{scenario.description}</p>
                     <div className="flex items-center gap-2">
-                      <span className="text-xs bg-primary-100 text-primary-700 px-2 py-1 rounded">
+                      <span className="text-xs bg-indigo-500/20 text-indigo-400 px-2 py-1 rounded">
                         {scenario.phraseIds.length} phrases
                       </span>
-                      <span className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded">
+                      <span className="text-xs bg-zinc-700 text-zinc-300 px-2 py-1 rounded">
                         Level {scenario.difficulty}
                       </span>
                     </div>
@@ -271,17 +265,17 @@ export default function PhrasesPage() {
 
         {/* All Phrases List */}
         <div>
-          <h2 className="text-lg font-bold text-gray-900 mb-3">
+          <h2 className="text-lg font-bold text-white mb-3">
             {searchQuery ? 'Search Results' : 'All Phrases'}{' '}
-            <span className="text-gray-500 font-normal">({filteredPhrases.length})</span>
+            <span className="text-zinc-500 font-normal">({filteredPhrases.length})</span>
           </h2>
 
           {filteredPhrases.length === 0 ? (
-            <div className="text-center py-12 text-gray-500">
+            <div className="text-center py-12 text-zinc-500">
               <p>No phrases found matching your search.</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2" style={{ gap: '1rem' }}>
               <AnimatePresence>
                 {filteredPhrases.map((phrase, index) => (
                   <motion.div
