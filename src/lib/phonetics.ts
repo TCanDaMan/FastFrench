@@ -322,3 +322,175 @@ export function formatPhonetic(phonetic: string): {
     highlights,
   }
 }
+
+/**
+ * ============================================
+ * LIAISON DETECTION SYSTEM
+ * ============================================
+ * French liaisons connect a normally silent final consonant
+ * to a following word that starts with a vowel sound.
+ */
+
+// Words that commonly trigger liaisons when followed by vowels
+const LIAISON_TRIGGERS = {
+  // Articles and determiners
+  articles: ['les', 'des', 'ces', 'mes', 'tes', 'ses', 'nos', 'vos', 'leurs', 'un', 'aux'],
+  // Pronouns
+  pronouns: ['nous', 'vous', 'ils', 'elles', 'on', 'en'],
+  // Common prepositions and adverbs
+  prepositions: ['dans', 'sans', 'sous', 'chez', 'très', 'plus', 'moins', 'bien', 'trop'],
+  // Adjectives before nouns
+  adjectives: ['petit', 'grand', 'gros', 'bon', 'mauvais', 'ancien', 'nouveau', 'premier', 'dernier'],
+  // Verbs (especially être forms)
+  verbs: ['est', 'sont', 'ont', 'était', 'étaient', 'avait', 'avaient'],
+  // Numbers
+  numbers: ['deux', 'trois', 'six', 'dix', 'vingt', 'cent'],
+}
+
+// All liaison trigger words flattened
+const ALL_LIAISON_WORDS = Object.values(LIAISON_TRIGGERS).flat()
+
+// Vowel sounds that allow liaison
+const VOWEL_START_REGEX = /^[aeiouyàâäéèêëïîôùûüœæh]/i
+
+// H aspiré words (block liaison despite starting with h)
+const H_ASPIRE_WORDS = [
+  'haricot', 'héros', 'honte', 'haut', 'huit', 'hibou', 'hamster',
+  'hasard', 'hache', 'haie', 'hall', 'handicap', 'hareng', 'harem'
+]
+
+export interface LiaisonPoint {
+  wordIndex: number
+  word: string
+  nextWord: string
+  liaisonSound: string  // The sound that connects: z, t, n, etc.
+  displayMark: string   // How to display: word‿nextWord
+}
+
+/**
+ * Get the liaison sound for a word ending
+ */
+function getLiaisonSound(word: string): string | null {
+  const lastChar = word.slice(-1).toLowerCase()
+  const lastTwo = word.slice(-2).toLowerCase()
+
+  // Common liaison sounds
+  if (lastChar === 's' || lastChar === 'x' || lastTwo === 'ez') return 'z'
+  if (lastChar === 't' || lastChar === 'd') return 't'
+  if (lastChar === 'n') return 'n'
+  if (lastChar === 'r') return 'ʁ'
+  if (lastTwo === 'ng') return 'g' // Rare
+
+  return null
+}
+
+/**
+ * Check if a word starts with a vowel sound (allowing liaison)
+ */
+function startsWithVowelSound(word: string): boolean {
+  if (!word) return false
+
+  // Check for h aspiré (blocks liaison)
+  if (H_ASPIRE_WORDS.some(h => word.toLowerCase().startsWith(h))) {
+    return false
+  }
+
+  return VOWEL_START_REGEX.test(word)
+}
+
+/**
+ * Detect all liaison points in a phrase
+ */
+export function detectLiaisons(phrase: string): LiaisonPoint[] {
+  const words = phrase.split(/\s+/).filter(w => w.length > 0)
+  const liaisons: LiaisonPoint[] = []
+
+  for (let i = 0; i < words.length - 1; i++) {
+    const currentWord = words[i].toLowerCase().replace(/[.,!?;:]/g, '')
+    const nextWord = words[i + 1].replace(/[.,!?;:]/g, '')
+
+    // Check if current word triggers liaison
+    if (ALL_LIAISON_WORDS.includes(currentWord)) {
+      // Check if next word starts with vowel sound
+      if (startsWithVowelSound(nextWord)) {
+        const liaisonSound = getLiaisonSound(currentWord)
+        if (liaisonSound) {
+          liaisons.push({
+            wordIndex: i,
+            word: words[i],
+            nextWord: words[i + 1],
+            liaisonSound,
+            displayMark: `${words[i]}‿${words[i + 1]}`
+          })
+        }
+      }
+    }
+  }
+
+  return liaisons
+}
+
+/**
+ * Get phrase with liaison marks (‿) connecting words
+ */
+export function getPhraseWithLiaisonMarks(phrase: string): string {
+  const liaisons = detectLiaisons(phrase)
+
+  if (liaisons.length === 0) {
+    return phrase
+  }
+
+  const words = phrase.split(/(\s+)/)
+  const result: string[] = []
+
+  for (let i = 0; i < words.length; i++) {
+    const word = words[i]
+
+    // Check if this word has a liaison to the next
+    const liaison = liaisons.find(l =>
+      l.word === word || l.word === word.replace(/[.,!?;:]/g, '')
+    )
+
+    if (liaison && i + 2 < words.length) {
+      // Add word with liaison mark, skip the space
+      result.push(word + '‿')
+      i++ // Skip the space
+    } else {
+      result.push(word)
+    }
+  }
+
+  return result.join('')
+}
+
+/**
+ * Get pronunciation guide for a phrase including liaisons
+ */
+export function getPhrasePronunciationGuide(phrase: string): {
+  original: string
+  withLiaisons: string
+  liaisonPoints: LiaisonPoint[]
+  tips: string[]
+} {
+  const liaisonPoints = detectLiaisons(phrase)
+  const withLiaisons = getPhraseWithLiaisonMarks(phrase)
+
+  const tips: string[] = []
+
+  // Generate tips for each liaison
+  liaisonPoints.forEach(liaison => {
+    tips.push(`Connect "${liaison.word}" to "${liaison.nextWord}" with a [${liaison.liaisonSound}] sound`)
+  })
+
+  // Add general tips if there are liaisons
+  if (liaisonPoints.length > 0) {
+    tips.push('Liaisons make your French sound more natural and fluid')
+  }
+
+  return {
+    original: phrase,
+    withLiaisons,
+    liaisonPoints,
+    tips,
+  }
+}

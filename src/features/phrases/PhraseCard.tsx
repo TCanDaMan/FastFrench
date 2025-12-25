@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Volume2, RotateCw, Check, Star } from 'lucide-react';
+import { Volume2, RotateCw, Check, Star, Turtle } from 'lucide-react';
 import { Phrase, CATEGORY_INFO } from '../../types/phrases';
 import { usePhraseStore } from './phraseStore';
 
@@ -18,17 +18,23 @@ export default function PhraseCard({
   onClick,
 }: PhraseCardProps) {
   const [isFlipped, setIsFlipped] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
   const { getProgress, markAsLearned, markAsUnlearned } = usePhraseStore();
 
   const progress = getProgress(phrase.id);
   const categoryInfo = CATEGORY_INFO[phrase.category];
 
-  const handlePlayAudio = (e: React.MouseEvent) => {
+  const handlePlayAudio = (e: React.MouseEvent, speed: 'slow' | 'normal' = 'normal') => {
     e.stopPropagation();
-    // Use Web Speech API for French pronunciation
+    // Cancel any ongoing speech
+    speechSynthesis.cancel();
+
+    setIsPlaying(true);
     const utterance = new SpeechSynthesisUtterance(phrase.french);
     utterance.lang = 'fr-FR';
-    utterance.rate = 0.85; // Slightly slower for learners
+    utterance.rate = speed === 'slow' ? 0.6 : 0.9;
+    utterance.onend = () => setIsPlaying(false);
+    utterance.onerror = () => setIsPlaying(false);
     speechSynthesis.speak(utterance);
   };
 
@@ -99,17 +105,40 @@ export default function PhraseCard({
             </p>
 
             {/* Phonetic */}
-            <div className={`flex items-center gap-3 ${compact ? 'mb-3' : 'mb-4'}`}>
-              <span className="font-ipa text-zinc-500 text-sm bg-zinc-800/70 px-2.5 py-1 rounded-md">
+            <div className={`${compact ? 'mb-3' : 'mb-4'}`}>
+              <span className="font-ipa text-zinc-500 text-sm bg-zinc-800/70 px-2.5 py-1 rounded-md inline-block mb-3">
                 {phrase.phonetic}
               </span>
-              <button
-                onClick={handlePlayAudio}
-                className="p-2 hover:bg-zinc-700 rounded-full transition-colors"
-                aria-label="Play pronunciation"
-              >
-                <Volume2 className="w-4 h-4 text-indigo-400" />
-              </button>
+
+              {/* Audio Controls */}
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={(e) => handlePlayAudio(e, 'slow')}
+                  disabled={isPlaying}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                    isPlaying
+                      ? 'bg-zinc-700 text-zinc-500 cursor-not-allowed'
+                      : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700 hover:text-white'
+                  }`}
+                  aria-label="Play slow pronunciation"
+                >
+                  <Turtle className="w-3.5 h-3.5" />
+                  Slow
+                </button>
+                <button
+                  onClick={(e) => handlePlayAudio(e, 'normal')}
+                  disabled={isPlaying}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                    isPlaying
+                      ? 'bg-zinc-700 text-zinc-500 cursor-not-allowed'
+                      : 'bg-gold-500/20 text-gold-400 hover:bg-gold-500/30 hover:text-gold-300'
+                  }`}
+                  aria-label="Play normal pronunciation"
+                >
+                  <Volume2 className="w-3.5 h-3.5" />
+                  Normal
+                </button>
+              </div>
             </div>
 
             {!compact && (
