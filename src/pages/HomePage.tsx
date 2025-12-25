@@ -39,7 +39,7 @@ export default function HomePage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
           className="grid grid-cols-2 sm:grid-cols-3 mb-6"
-          style={{ gap: '0.75rem' }}
+          style={{ gap: '1rem' }}
         >
           <div className="bg-zinc-900 rounded-2xl p-4 border border-zinc-700">
             <div className="flex items-center gap-2 text-orange-400 mb-1">
@@ -87,7 +87,7 @@ export default function HomePage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
           className="grid grid-cols-2 lg:grid-cols-4 mb-6"
-          style={{ gap: '0.75rem' }}
+          style={{ gap: '1rem' }}
         >
           <button
             onClick={() => navigate('/practice')}

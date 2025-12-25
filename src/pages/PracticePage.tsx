@@ -166,7 +166,7 @@ export default function PracticePage() {
                 <h2 className="text-xl font-bold text-white mb-4">
                   Practice by Category
                 </h2>
-                <div className="grid grid-cols-2 md:grid-cols-5" style={{ gap: '0.75rem' }}>
+                <div className="grid grid-cols-2 md:grid-cols-5" style={{ gap: '1rem' }}>
                   {(Object.keys(CATEGORY_INFO) as VocabularyCategory[]).map((category) => {
                     const info = CATEGORY_INFO[category]
                     const categoryWords = getWordsByCategory(category)

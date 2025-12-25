@@ -124,7 +124,7 @@ export default function PhrasesPage() {
   return (
     <div className="min-h-screen bg-zinc-950 text-white" style={{ paddingBottom: '5rem' }}>
       {/* Header */}
-      <div className="bg-zinc-900 border-b border-zinc-800 sticky top-0 lg:top-14 z-10">
+      <div className="bg-zinc-900 border-b border-zinc-800 sticky top-0 lg:top-16 z-10">
         <div className="px-4 sm:px-6 lg:px-8 py-6" style={{ maxWidth: '72rem', marginInline: 'auto' }}>
           <div className="flex items-center justify-between mb-4">
             <div>
@@ -192,7 +192,7 @@ export default function PhrasesPage() {
       <div className="px-4 sm:px-6 lg:px-8 py-6" style={{ maxWidth: '72rem', marginInline: 'auto' }}>
         {/* Category Pills */}
         <h2 className="text-lg font-bold text-white mb-3">Browse by Category</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 mb-8" style={{ gap: '0.75rem' }}>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 mb-8" style={{ gap: '1rem' }}>
           {categories.map((category) => {
             const info = CATEGORY_INFO[category];
             const progress = getCategoryProgress(category);
@@ -205,9 +205,9 @@ export default function PhrasesPage() {
                 onClick={() => handleCategoryClick(category)}
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
-                className="bg-zinc-900 border border-zinc-700 rounded-xl px-4 pt-5 pb-4 text-center hover:border-zinc-600 hover:bg-zinc-800/50 transition-all"
+                className="bg-zinc-900 border border-zinc-700 rounded-xl px-4 py-4 text-center hover:border-zinc-600 hover:bg-zinc-800/50 transition-all overflow-visible"
               >
-                <div className="text-3xl leading-none mb-3" style={{ lineHeight: 1 }}>{info.emoji}</div>
+                <div className="text-2xl mb-2">{info.emoji}</div>
                 <div className="text-sm font-semibold text-white mb-1">{info.name}</div>
                 <div className="text-xs text-zinc-500">
                   {progress.learned}/{progress.total}
