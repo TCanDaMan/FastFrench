@@ -205,15 +205,15 @@ export default function PhrasesPage() {
                 onClick={() => handleCategoryClick(category)}
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
-                className="bg-zinc-900 border border-zinc-700 rounded-xl p-4 text-center hover:border-zinc-600 transition-all"
+                className="bg-zinc-900 border border-zinc-700 rounded-xl px-4 pt-5 pb-4 text-center hover:border-zinc-600 hover:bg-zinc-800/50 transition-all"
               >
-                <div className="text-3xl mb-2">{info.emoji}</div>
+                <div className="text-3xl leading-none mb-3" style={{ lineHeight: 1 }}>{info.emoji}</div>
                 <div className="text-sm font-semibold text-white mb-1">{info.name}</div>
-                <div className="text-xs text-zinc-400">
+                <div className="text-xs text-zinc-500">
                   {progress.learned}/{progress.total}
                 </div>
                 {/* Mini progress bar */}
-                <div className="w-full bg-zinc-700 rounded-full h-1 mt-2">
+                <div className="w-full bg-zinc-800 rounded-full h-1.5 mt-3">
                   <div
                     className={`h-full rounded-full ${PROGRESS_BAR_COLORS[info.color] || 'bg-indigo-500'}`}
                     style={{ width: `${progressPercent}%` }}

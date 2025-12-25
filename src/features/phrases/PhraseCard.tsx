@@ -49,17 +49,17 @@ export default function PhraseCard({
 
   const cardContent = (
     <div
-      className={`relative bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer ${
-        compact ? 'p-4' : 'p-6'
+      className={`relative bg-zinc-900 border border-zinc-700 rounded-2xl hover:border-zinc-600 hover:bg-zinc-800/50 transition-all duration-300 cursor-pointer ${
+        compact ? 'p-4' : 'p-5'
       }`}
       onClick={onClick || handleFlip}
     >
       {/* Category Badge */}
       {showCategory && (
-        <div className="absolute top-3 right-3 flex items-center gap-2">
-          <span className="text-xl">{categoryInfo.emoji}</span>
+        <div className="absolute top-4 right-4 flex items-center gap-2">
+          <span className="text-lg leading-none">{categoryInfo.emoji}</span>
           {!compact && (
-            <span className={`text-xs font-semibold ${categoryInfo.color}`}>
+            <span className="text-xs font-semibold text-indigo-400">
               {categoryInfo.name}
             </span>
           )}
@@ -71,10 +71,10 @@ export default function PhraseCard({
         {[...Array(5)].map((_, i) => (
           <Star
             key={i}
-            className={`w-3 h-3 ${
+            className={`w-3.5 h-3.5 ${
               i < phrase.difficulty
                 ? 'fill-amber-400 text-amber-400'
-                : 'fill-gray-200 text-gray-200'
+                : 'fill-zinc-700 text-zinc-700'
             }`}
           />
         ))}
@@ -89,34 +89,38 @@ export default function PhraseCard({
             transition={{ duration: 0.2 }}
           >
             {/* French Phrase */}
-            <h3 className={`font-bold text-primary-900 mb-2 ${compact ? 'text-xl' : 'text-2xl'}`}>
+            <h3 className={`font-bold text-indigo-400 mb-2 tracking-wide ${compact ? 'text-xl' : 'text-2xl'}`}>
               {phrase.french}
             </h3>
 
             {/* English Translation */}
-            <p className={`text-gray-600 mb-3 ${compact ? 'text-sm' : 'text-base'}`}>
+            <p className={`text-zinc-300 mb-4 ${compact ? 'text-sm' : 'text-base'}`}>
               {phrase.english}
             </p>
 
             {/* Phonetic */}
-            <div className={`flex items-center gap-2 mb-4 ${compact ? 'text-xs' : 'text-sm'}`}>
-              <span className="text-gray-500 font-mono">{phrase.phonetic}</span>
+            <div className={`flex items-center gap-3 ${compact ? 'mb-3' : 'mb-4'}`}>
+              <span className="font-ipa text-zinc-500 text-sm bg-zinc-800/70 px-2.5 py-1 rounded-md">
+                {phrase.phonetic}
+              </span>
               <button
                 onClick={handlePlayAudio}
-                className="p-1.5 hover:bg-primary-100 rounded-full transition-colors"
+                className="p-2 hover:bg-zinc-700 rounded-full transition-colors"
                 aria-label="Play pronunciation"
               >
-                <Volume2 className="w-4 h-4 text-primary-600" />
+                <Volume2 className="w-4 h-4 text-indigo-400" />
               </button>
             </div>
 
             {!compact && (
-              <div className="flex items-center justify-between pt-3 border-t border-gray-100">
+              <div className="flex items-center justify-between pt-4 border-t border-zinc-700/50">
                 {/* Practice Count */}
-                {progress && progress.practiced > 0 && (
-                  <span className="text-xs text-gray-500">
+                {progress && progress.practiced > 0 ? (
+                  <span className="text-xs text-zinc-500">
                     Practiced {progress.practiced}x
                   </span>
+                ) : (
+                  <span></span>
                 )}
 
                 {/* Flip Icon */}
@@ -125,9 +129,9 @@ export default function PhraseCard({
                     e.stopPropagation();
                     setIsFlipped(true);
                   }}
-                  className="text-xs text-primary-600 hover:text-primary-700 flex items-center gap-1"
+                  className="text-sm text-indigo-400 hover:text-indigo-300 flex items-center gap-1.5 transition-colors"
                 >
-                  <RotateCw className="w-3 h-3" />
+                  <RotateCw className="w-4 h-4" />
                   More info
                 </button>
               </div>
@@ -141,21 +145,21 @@ export default function PhraseCard({
             transition={{ duration: 0.2 }}
           >
             {/* Back of card - detailed info */}
-            <h4 className="font-semibold text-lg text-primary-900 mb-3">Usage Context</h4>
-            <p className="text-gray-700 text-sm mb-4 leading-relaxed">
+            <h4 className="font-semibold text-lg text-white mb-3">Usage Context</h4>
+            <p className="text-zinc-300 text-sm mb-4 leading-relaxed">
               {phrase.usageContext}
             </p>
 
             {/* Comfort Level */}
             {progress && (
               <div className="mb-4">
-                <p className="text-xs text-gray-600 mb-1">Your Comfort Level</p>
+                <p className="text-xs text-zinc-400 mb-2">Your Comfort Level</p>
                 <div className="flex gap-1">
                   {[1, 2, 3, 4, 5].map((level) => (
                     <div
                       key={level}
                       className={`h-2 flex-1 rounded ${
-                        progress.comfortLevel >= level ? 'bg-green-500' : 'bg-gray-200'
+                        progress.comfortLevel >= level ? 'bg-emerald-500' : 'bg-zinc-700'
                       }`}
                     />
                   ))}
@@ -166,10 +170,10 @@ export default function PhraseCard({
             {/* Mark as Learned */}
             <button
               onClick={handleToggleLearned}
-              className={`w-full py-2 px-4 rounded-lg font-medium transition-colors ${
+              className={`w-full py-2.5 px-4 rounded-xl font-medium transition-colors ${
                 progress?.isLearned
-                  ? 'bg-green-100 text-green-700 hover:bg-green-200'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  ? 'bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30'
+                  : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'
               }`}
             >
               <Check className="w-4 h-4 inline mr-2" />
@@ -181,9 +185,9 @@ export default function PhraseCard({
                 e.stopPropagation();
                 setIsFlipped(false);
               }}
-              className="mt-3 w-full text-xs text-primary-600 hover:text-primary-700 flex items-center justify-center gap-1"
+              className="mt-3 w-full text-sm text-indigo-400 hover:text-indigo-300 flex items-center justify-center gap-1.5 transition-colors"
             >
-              <RotateCw className="w-3 h-3" />
+              <RotateCw className="w-4 h-4" />
               Back to phrase
             </button>
           </motion.div>
