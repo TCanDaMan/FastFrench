@@ -1,5 +1,4 @@
-import { motion } from 'framer-motion'
-import { Flame, Trophy, Target, MessageCircle, Calendar } from 'lucide-react'
+import { Flame, Trophy, Target, MessageCircle, Calendar, Lock } from 'lucide-react'
 import { useAuth } from '../hooks/useAuth'
 import { useGamification } from '../hooks/useGamification'
 
@@ -22,93 +21,81 @@ export default function ProgressPage() {
   ]
 
   const maxXp = Math.max(...weeklyData.map(d => d.xp), dailyProgress.goal)
+  const unlockedCount = achievements.filter(a => a.unlocked).length
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-white" style={{ paddingBottom: '5rem', paddingTop: '5rem' }}>
-      <div className="px-4 sm:px-6 lg:px-8 mx-auto" style={{ maxWidth: '72rem' }}>
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-8"
-        >
-          <h1 className="text-3xl font-bold text-white mb-2">Your Progress</h1>
-          <p className="text-zinc-400">Track your French learning journey</p>
-        </motion.div>
+    <div className="min-h-screen bg-base">
+      <div className="max-w-2xl mx-auto px-4 pt-20 pb-24 lg:pt-24">
+
+        {/* Page Header */}
+        <div className="mb-6">
+          <h1 className="text-text-primary text-2xl font-bold mb-1">Your Progress</h1>
+          <p className="text-text-muted text-sm">Track your French learning journey</p>
+        </div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+        <div className="grid grid-cols-2 gap-3 mb-6">
           <StatCard
             icon={Flame}
-            title="Day Streak"
-            value={`${currentStreak}`}
-            subtitle="days"
-            iconColor="text-orange-400"
-            iconBg="bg-orange-500/20"
+            iconColor="text-orange-500"
+            value={currentStreak}
+            subtitle="Day Streak"
           />
           <StatCard
             icon={Trophy}
-            title="Total XP"
-            value={`${totalXp}`}
-            subtitle="points"
-            iconColor="text-yellow-400"
-            iconBg="bg-yellow-500/20"
+            iconColor="text-gold"
+            value={totalXp.toLocaleString()}
+            subtitle="Total XP"
           />
           <StatCard
             icon={Target}
-            title="Daily Goal"
+            iconColor="text-success"
             value={`${dailyProgress.current}/${dailyProgress.goal}`}
-            subtitle="XP today"
-            iconColor="text-emerald-400"
-            iconBg="bg-emerald-500/20"
+            subtitle="Daily Goal"
           />
           <StatCard
             icon={MessageCircle}
-            title="Phrases"
-            value={`${stats.phrases_practiced}`}
-            subtitle="practiced"
-            iconColor="text-purple-400"
-            iconBg="bg-purple-500/20"
+            iconColor="text-primary"
+            value={stats.phrases_practiced}
+            subtitle="Phrases"
           />
         </div>
 
         {/* Weekly Activity */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="bg-zinc-900 border border-zinc-700 rounded-2xl p-6 mb-6"
-        >
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-semibold text-white">Weekly Activity</h2>
-            <div className="flex items-center gap-2 text-zinc-400 text-sm">
-              <Calendar className="w-4 h-4" />
+        <div className="card p-5 mb-6">
+          <div className="flex items-center justify-between mb-5">
+            <h2 className="text-text-primary font-semibold">Weekly Activity</h2>
+            <div className="flex items-center gap-1.5 text-text-muted text-xs">
+              <Calendar className="w-3.5 h-3.5" />
               This week
             </div>
           </div>
 
-          <div className="flex justify-between items-end h-40 gap-2">
+          {/* Bar Chart */}
+          <div className="flex justify-between items-end h-32 gap-2 mb-4">
             {weeklyData.map((data, index) => {
               const height = maxXp > 0 ? (data.xp / maxXp) * 100 : 0
               const isToday = index === new Date().getDay() - 1 || (index === 6 && new Date().getDay() === 0)
+              const metGoal = data.xp >= dailyProgress.goal
 
               return (
                 <div key={index} className="flex flex-col items-center flex-1 gap-2">
-                  <div className="w-full flex flex-col justify-end" style={{ height: '8rem' }}>
-                    <motion.div
-                      initial={{ height: 0 }}
-                      animate={{ height: `${height}%` }}
-                      transition={{ delay: index * 0.1, duration: 0.5 }}
-                      className={`w-full rounded-t-lg ${
+                  <div className="w-full flex flex-col justify-end h-24">
+                    <div
+                      className={`w-full rounded-t-md transition-all duration-500 ${
                         isToday
-                          ? 'bg-gradient-to-t from-indigo-600 to-purple-500'
-                          : data.xp >= dailyProgress.goal
-                            ? 'bg-gradient-to-t from-emerald-600 to-emerald-400'
-                            : 'bg-zinc-700'
+                          ? 'bg-primary'
+                          : metGoal
+                            ? 'bg-success'
+                            : 'bg-subtle'
                       }`}
-                      style={{ minHeight: data.xp > 0 ? '0.5rem' : '0' }}
+                      style={{
+                        height: `${height}%`,
+                        minHeight: data.xp > 0 ? '4px' : '0'
+                      }}
                     />
                   </div>
-                  <span className={`text-xs font-medium ${isToday ? 'text-indigo-400' : 'text-zinc-500'}`}>
+                  <span className={`text-xs font-medium ${isToday ? 'text-primary' : 'text-text-muted'}`}>
                     {data.day}
                   </span>
                 </div>
@@ -116,82 +103,84 @@ export default function ProgressPage() {
             })}
           </div>
 
-          <div className="flex items-center justify-center gap-6 mt-6 pt-4 border-t border-zinc-700">
+          {/* Legend */}
+          <div className="flex items-center justify-center gap-5 pt-4 border-t border-border">
             <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded bg-gradient-to-t from-emerald-600 to-emerald-400" />
-              <span className="text-xs text-zinc-400">Goal met</span>
+              <div className="w-2.5 h-2.5 rounded-sm bg-success" />
+              <span className="text-xs text-text-muted">Goal met</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded bg-gradient-to-t from-indigo-600 to-purple-500" />
-              <span className="text-xs text-zinc-400">Today</span>
+              <div className="w-2.5 h-2.5 rounded-sm bg-primary" />
+              <span className="text-xs text-text-muted">Today</span>
             </div>
           </div>
-        </motion.div>
+        </div>
 
         {/* Achievements */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="bg-zinc-900 border border-zinc-700 rounded-2xl p-6"
-        >
+        <div className="card p-5">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-semibold text-white">Achievements</h2>
-            <span className="text-sm text-zinc-400">
-              {achievements.filter(a => a.unlocked).length}/{achievements.length} unlocked
+            <h2 className="text-text-primary font-semibold">Achievements</h2>
+            <span className="text-xs text-text-muted">
+              {unlockedCount}/{achievements.length} unlocked
             </span>
           </div>
-          <div className="grid grid-cols-4 sm:grid-cols-6 gap-3">
-            {achievements.length > 0 ? (
-              achievements.slice(0, 8).map((achievement) => (
+
+          {achievements.length > 0 ? (
+            <div className="grid grid-cols-4 gap-3">
+              {achievements.slice(0, 8).map((achievement) => (
                 <div
                   key={achievement.id}
-                  className={`aspect-square rounded-xl flex items-center justify-center ${
+                  className={`aspect-square rounded-xl flex flex-col items-center justify-center gap-1 transition-all ${
                     achievement.unlocked
-                      ? 'bg-gold-500/20 border border-gold-500/50'
-                      : 'bg-zinc-800'
+                      ? 'bg-gold/10 border border-gold/30'
+                      : 'bg-elevated border border-border'
                   }`}
                   title={achievement.unlocked ? achievement.name : 'Locked'}
                 >
-                  <span className={`text-3xl ${achievement.unlocked ? '' : 'opacity-30 grayscale'}`}>
-                    🏆
-                  </span>
+                  {achievement.unlocked ? (
+                    <span className="text-2xl">🏆</span>
+                  ) : (
+                    <Lock className="w-5 h-5 text-text-muted" />
+                  )}
                 </div>
-              ))
-            ) : (
-              <p className="col-span-4 sm:col-span-6 text-zinc-500 text-center py-4">
-                Practice to unlock achievements!
-              </p>
-            )}
-          </div>
-        </motion.div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-text-muted text-sm text-center py-6">
+              Practice to unlock achievements!
+            </p>
+          )}
+
+          {achievements.length > 8 && (
+            <button className="w-full mt-4 btn btn-ghost btn-sm">
+              View all {achievements.length} achievements
+            </button>
+          )}
+        </div>
+
       </div>
     </div>
   )
 }
 
-interface StatCardProps {
+function StatCard({
+  icon: Icon,
+  iconColor,
+  value,
+  subtitle,
+}: {
   icon: React.ElementType
-  title: string
-  value: string
-  subtitle: string
   iconColor: string
-  iconBg: string
-}
-
-function StatCard({ icon: Icon, title, value, subtitle, iconColor, iconBg }: StatCardProps) {
+  value: string | number
+  subtitle: string
+}) {
   return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.9 }}
-      animate={{ opacity: 1, scale: 1 }}
-      className="bg-zinc-900 border border-zinc-700 rounded-2xl p-5"
-    >
-      <div className={`inline-flex p-3 rounded-xl ${iconBg} mb-3`}>
-        <Icon className={`w-6 h-6 ${iconColor}`} />
+    <div className="stat-card">
+      <div className="flex items-center gap-2 mb-2">
+        <Icon className={`w-5 h-5 ${iconColor}`} />
       </div>
-      <div className="text-sm text-zinc-400 mb-1">{title}</div>
-      <div className="text-3xl font-bold text-white">{value}</div>
-      <div className="text-xs text-zinc-500">{subtitle}</div>
-    </motion.div>
+      <div className="stat-value">{value}</div>
+      <div className="stat-label">{subtitle}</div>
+    </div>
   )
 }

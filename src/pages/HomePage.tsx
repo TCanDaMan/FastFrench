@@ -1,6 +1,5 @@
-import { motion } from 'framer-motion'
-import { Sparkles, ArrowRight, Flame, Brain, MessageCircle, Trophy, Target, User } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
+import { Flame, Trophy, Target, BookOpen, MessageCircle, BarChart3, ChevronRight, User } from 'lucide-react'
 import { useAuth } from '../hooks/useAuth'
 import { useGamification } from '../hooks/useGamification'
 
@@ -12,153 +11,182 @@ export default function HomePage() {
   const displayName = profile?.display_name || 'Learner'
   const totalXp = profile?.total_xp || 0
   const currentStreak = profile?.current_streak || 0
+  const level = Math.floor(Math.sqrt(totalXp / 100)) + 1
+  const xpForCurrentLevel = Math.pow(level - 1, 2) * 100
+  const xpForNextLevel = Math.pow(level, 2) * 100
+  const xpProgress = totalXp - xpForCurrentLevel
+  const xpNeeded = xpForNextLevel - xpForCurrentLevel
+  const levelProgress = xpNeeded > 0 ? (xpProgress / xpNeeded) * 100 : 0
+
+  const dailyGoalProgress = dailyProgress.goal > 0
+    ? (dailyProgress.current / dailyProgress.goal) * 100
+    : 0
 
   return (
-    <div className="min-h-screen w-full bg-zinc-950 text-white" style={{ paddingBottom: '6rem', paddingTop: '5rem' }}>
-      <div className="px-4 sm:px-6 lg:px-8 mx-auto" style={{ maxWidth: '72rem' }}>
+    <div className="min-h-screen bg-base">
+      {/* Page Container */}
+      <div className="max-w-2xl mx-auto px-4 pt-20 pb-24 lg:pt-24">
 
-        {/* Welcome Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-6"
-        >
-          <div className="flex items-center gap-4 mb-2">
+        {/* User Profile Card */}
+        <div className="card p-5 mb-6">
+          <div className="flex items-center gap-4">
             <button
               onClick={() => navigate('/profile')}
-              className="w-12 h-12 rounded-full bg-gradient-to-br from-gold-500 to-gold-600 flex items-center justify-center hover:shadow-glow-gold transition-shadow"
+              className="w-14 h-14 rounded-full bg-elevated border border-border flex items-center justify-center hover:border-border-hover transition-colors"
             >
-              <User className="w-6 h-6 text-zinc-950" />
+              <User className="w-6 h-6 text-text-secondary" />
             </button>
-            <div>
-              <p className="text-zinc-400 text-sm">Welcome back</p>
-              <h1 className="text-2xl font-bold">Bonjour, {displayName}!</h1>
+            <div className="flex-1 min-w-0">
+              <p className="text-text-muted text-sm">Welcome back</p>
+              <h1 className="text-text-primary text-xl font-semibold truncate">
+                Bonjour, {displayName}!
+              </h1>
+              <div className="flex items-center gap-2 mt-1">
+                <span className="text-text-secondary text-sm">Level {level}</span>
+                <span className="text-text-muted">•</span>
+                <span className="text-text-muted text-sm">{xpNeeded - xpProgress} XP to next</span>
+              </div>
             </div>
           </div>
-        </motion.div>
+          {/* Level Progress Bar */}
+          <div className="mt-4">
+            <div className="progress-bar">
+              <div
+                className="progress-fill progress-fill-primary"
+                style={{ width: `${levelProgress}%` }}
+              />
+            </div>
+          </div>
+        </div>
 
-        {/* Stats Cards */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="grid grid-cols-2 sm:grid-cols-3 gap-5 mb-8"
-        >
-          <div className="bg-zinc-900 rounded-2xl p-5 border border-zinc-700 shadow-lg shadow-black/20">
-            <div className="flex items-center gap-3 text-orange-400 mb-2">
-              <Flame className="w-6 h-6" />
-              <span className="text-3xl font-bold">{currentStreak}</span>
+        {/* Stats Grid */}
+        <div className="grid grid-cols-3 gap-3 mb-6">
+          {/* Streak */}
+          <div className="stat-card">
+            <div className="flex items-center gap-2 mb-2">
+              <Flame className="w-5 h-5 text-orange-500" />
             </div>
-            <p className="text-sm text-zinc-400">Day Streak</p>
+            <div className="stat-value">{currentStreak}</div>
+            <div className="stat-label">Day Streak</div>
           </div>
-          <div className="bg-zinc-900 rounded-2xl p-5 border border-zinc-700 shadow-lg shadow-black/20">
-            <div className="flex items-center gap-3 text-yellow-400 mb-2">
-              <Trophy className="w-6 h-6" />
-              <span className="text-3xl font-bold">{totalXp}</span>
-            </div>
-            <p className="text-sm text-zinc-400">Total XP</p>
-          </div>
-          <div className="bg-zinc-900 rounded-2xl p-5 border border-zinc-700 shadow-lg shadow-black/20">
-            <div className="flex items-center gap-3 text-emerald-400 mb-2">
-              <Target className="w-6 h-6" />
-              <span className="text-3xl font-bold">{dailyProgress.current}/{dailyProgress.goal}</span>
-            </div>
-            <p className="text-sm text-zinc-400">Daily Goal</p>
-          </div>
-        </motion.div>
 
-        {/* Paris Countdown */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.15 }}
-          className="relative overflow-hidden bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl p-6 mb-8 shadow-xl shadow-indigo-900/30"
-        >
-          <div className="relative z-10">
-            <p className="text-indigo-200 text-sm font-medium mb-2">Paris Trip Countdown</p>
-            <p className="text-5xl font-bold mb-2">~100 days</p>
-            <p className="text-indigo-200 text-base">Keep practicing daily!</p>
+          {/* Total XP */}
+          <div className="stat-card">
+            <div className="flex items-center gap-2 mb-2">
+              <Trophy className="w-5 h-5 text-gold" />
+            </div>
+            <div className="stat-value">{totalXp.toLocaleString()}</div>
+            <div className="stat-label">Total XP</div>
           </div>
-          <div className="absolute right-6 top-1/2 -translate-y-1/2 text-7xl opacity-40">
+
+          {/* Daily Goal */}
+          <div className="stat-card">
+            <div className="flex items-center gap-2 mb-2">
+              <Target className="w-5 h-5 text-success" />
+            </div>
+            <div className="stat-value">{dailyProgress.current}/{dailyProgress.goal}</div>
+            <div className="stat-label">Daily Goal</div>
+            <div className="progress-bar mt-2">
+              <div
+                className="progress-fill progress-fill-success"
+                style={{ width: `${Math.min(dailyGoalProgress, 100)}%` }}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Paris Countdown Hero */}
+        <div className="card p-6 mb-6 relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-violet-600/20 to-purple-600/10" />
+          <div className="relative">
+            <p className="text-text-muted text-sm font-medium mb-1">Paris Trip Countdown</p>
+            <p className="text-text-primary text-4xl font-bold mb-2">~100 days</p>
+            <p className="text-text-secondary text-sm mb-4">Keep your streak alive!</p>
+            <button
+              onClick={() => navigate('/practice')}
+              className="btn btn-primary btn-md"
+            >
+              Continue Learning
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
+          <div className="absolute right-4 top-1/2 -translate-y-1/2 text-6xl opacity-30">
             🗼
           </div>
-        </motion.div>
+        </div>
 
-        {/* Quick Actions Grid */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="grid grid-cols-3 gap-5 mb-8"
-        >
-          <button
-            onClick={() => navigate('/practice')}
-            className="bg-zinc-900 rounded-2xl p-6 text-left border border-zinc-700 shadow-lg shadow-black/20 hover:border-indigo-500 hover:bg-zinc-800 hover:shadow-xl hover:scale-[1.02] transition-all active:scale-[0.98]"
-          >
-            <div className="w-14 h-14 rounded-xl bg-indigo-500/20 flex items-center justify-center mb-4">
-              <Brain className="w-7 h-7 text-indigo-400" />
-            </div>
-            <h3 className="font-semibold text-white text-lg mb-1">Practice</h3>
-            <p className="text-sm text-zinc-400">Review flashcards</p>
-          </button>
-
-          <button
-            onClick={() => navigate('/phrases')}
-            className="bg-zinc-900 rounded-2xl p-6 text-left border border-zinc-700 shadow-lg shadow-black/20 hover:border-purple-500 hover:bg-zinc-800 hover:shadow-xl hover:scale-[1.02] transition-all active:scale-[0.98]"
-          >
-            <div className="w-14 h-14 rounded-xl bg-purple-500/20 flex items-center justify-center mb-4">
-              <MessageCircle className="w-7 h-7 text-purple-400" />
-            </div>
-            <h3 className="font-semibold text-white text-lg mb-1">Phrases</h3>
-            <p className="text-sm text-zinc-400">Travel essentials</p>
-          </button>
-
-          <button
-            onClick={() => navigate('/progress')}
-            className="bg-zinc-900 rounded-2xl p-6 text-left border border-zinc-700 shadow-lg shadow-black/20 hover:border-amber-500 hover:bg-zinc-800 hover:shadow-xl hover:scale-[1.02] transition-all active:scale-[0.98]"
-          >
-            <div className="w-14 h-14 rounded-xl bg-amber-500/20 flex items-center justify-center mb-4">
-              <Trophy className="w-7 h-7 text-amber-400" />
-            </div>
-            <h3 className="font-semibold text-white text-lg mb-1">Progress</h3>
-            <p className="text-sm text-zinc-400">Track your stats</p>
-          </button>
-        </motion.div>
-
-        {/* Start Learning CTA */}
-        <motion.button
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.25 }}
-          whileTap={{ scale: 0.98 }}
-          onClick={() => navigate('/practice')}
-          className="w-full gradient-gold hover:shadow-glow-gold text-zinc-950 font-semibold py-4 rounded-xl transition-all flex items-center justify-center gap-2"
-        >
-          Start Learning
-          <ArrowRight className="w-5 h-5" />
-        </motion.button>
+        {/* Quick Actions */}
+        <div className="mb-6">
+          <h2 className="text-text-primary font-semibold mb-3">Quick Actions</h2>
+          <div className="grid grid-cols-2 gap-3">
+            <QuickActionCard
+              icon={BookOpen}
+              title="Practice"
+              subtitle="110 words due"
+              onClick={() => navigate('/practice')}
+            />
+            <QuickActionCard
+              icon={MessageCircle}
+              title="Phrases"
+              subtitle="79 phrases"
+              onClick={() => navigate('/phrases')}
+            />
+            <QuickActionCard
+              icon={Target}
+              title="Daily Review"
+              subtitle="Start session"
+              onClick={() => navigate('/practice')}
+            />
+            <QuickActionCard
+              icon={BarChart3}
+              title="Progress"
+              subtitle="View stats"
+              onClick={() => navigate('/progress')}
+            />
+          </div>
+        </div>
 
         {/* Pro Tip */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="mt-8 bg-zinc-900 border border-zinc-700 rounded-2xl p-5 shadow-lg shadow-black/20"
-        >
-          <div className="flex items-start gap-4">
-            <div className="w-12 h-12 rounded-xl bg-indigo-500/20 flex items-center justify-center flex-shrink-0">
-              <Sparkles className="w-6 h-6 text-indigo-400" />
+        <div className="card p-4">
+          <div className="flex gap-3">
+            <div className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center flex-shrink-0">
+              <span className="text-sm">💡</span>
             </div>
             <div>
-              <h4 className="font-semibold text-white text-lg mb-1.5">Pro Tip</h4>
-              <p className="text-base text-zinc-400 leading-relaxed">
+              <p className="text-text-primary text-sm font-medium mb-1">Pro Tip</p>
+              <p className="text-text-muted text-sm">
                 Practice for just 10 minutes a day to build a lasting habit. Consistency beats intensity!
               </p>
             </div>
           </div>
-        </motion.div>
+        </div>
 
       </div>
     </div>
+  )
+}
+
+function QuickActionCard({
+  icon: Icon,
+  title,
+  subtitle,
+  onClick
+}: {
+  icon: React.ElementType
+  title: string
+  subtitle: string
+  onClick: () => void
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className="card p-4 text-left hover:border-border-hover transition-all group"
+    >
+      <div className="w-10 h-10 rounded-lg bg-elevated border border-border flex items-center justify-center mb-3 group-hover:border-border-hover transition-colors">
+        <Icon className="w-5 h-5 text-text-secondary" />
+      </div>
+      <p className="text-text-primary font-medium">{title}</p>
+      <p className="text-text-muted text-sm">{subtitle}</p>
+    </button>
   )
 }

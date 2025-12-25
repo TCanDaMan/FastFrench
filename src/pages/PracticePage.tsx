@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { BookOpen, Clock, Star, CheckCircle, ChevronLeft, ChevronRight, X } from 'lucide-react'
 import { FlashcardDeck } from '../features/vocabulary/FlashcardDeck'
 import { VocabularyList } from '../features/vocabulary/VocabularyList'
 import { AddWordModal } from '../features/vocabulary/AddWordModal'
@@ -29,7 +29,6 @@ export default function PracticePage() {
   const stats = getStats()
 
   useEffect(() => {
-    // Initialize vocabulary on first load
     initializeWords()
   }, [initializeWords])
 
@@ -66,188 +65,120 @@ export default function PracticePage() {
   const practiceWords = getPracticeWords()
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-white" style={{ paddingBottom: '5rem', paddingTop: '5rem' }}>
-      <div className="px-4 sm:px-6 lg:px-8 mx-auto" style={{ maxWidth: '72rem' }}>
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-white mb-2">Practice</h1>
-          <p className="text-zinc-400">
-            Master French vocabulary with spaced repetition
-          </p>
+    <div className="min-h-screen bg-base">
+      <div className="max-w-2xl mx-auto px-4 pt-20 pb-24 lg:pt-24">
+
+        {/* Page Header */}
+        <div className="mb-6">
+          <h1 className="text-text-primary text-2xl font-bold mb-1">Practice</h1>
+          <p className="text-text-muted text-sm">Master French vocabulary with spaced repetition</p>
         </div>
 
-        {/* View Tabs - iOS-style pill toggle */}
-        <div className="inline-flex bg-zinc-800 rounded-xl p-1.5 mb-8 border border-zinc-700">
+        {/* View Toggle */}
+        <div className="segmented-control mb-6">
           <button
             onClick={() => setView('selection')}
-            className={`px-6 py-2.5 rounded-lg font-semibold transition-all ${
-              view === 'selection' || view === 'practice'
-                ? 'bg-indigo-600 text-white shadow-md'
-                : 'text-zinc-400 hover:text-white'
-            }`}
+            className={`segmented-control-item ${view === 'selection' || view === 'practice' ? 'segmented-control-item-active' : ''}`}
           >
             Practice
           </button>
           <button
             onClick={() => setView('browse')}
-            className={`px-6 py-2.5 rounded-lg font-semibold transition-all ${
-              view === 'browse'
-                ? 'bg-indigo-600 text-white shadow-md'
-                : 'text-zinc-400 hover:text-white'
-            }`}
+            className={`segmented-control-item ${view === 'browse' ? 'segmented-control-item-active' : ''}`}
           >
             Browse
           </button>
         </div>
 
-        <AnimatePresence mode="wait">
-          {view === 'selection' && (
-            <motion.div
-              key="selection"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-            >
-              {/* Daily Stats */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-5 mb-8">
-                <StatCard
-                  icon="📚"
-                  label="Total Words"
-                  value={stats.totalWords}
-                  color="from-blue-500 to-blue-600"
-                />
-                <StatCard
-                  icon="🔴"
-                  label="Due for Review"
-                  value={stats.dueWords}
-                  color="from-red-500 to-red-600"
-                />
-                <StatCard
-                  icon="⭐"
-                  label="Mastered"
-                  value={stats.masteredWords}
-                  color="from-yellow-500 to-yellow-600"
-                />
-                <StatCard
-                  icon="✅"
-                  label="Reviewed Today"
-                  value={stats.reviewedToday}
-                  color="from-green-500 to-green-600"
-                />
+        {view === 'selection' && (
+          <>
+            {/* Stats Grid */}
+            <div className="grid grid-cols-2 gap-3 mb-6">
+              <StatCard icon={BookOpen} iconColor="text-primary" value={stats.totalWords} label="Total Words" />
+              <StatCard icon={Clock} iconColor="text-danger" value={stats.dueWords} label="Due for Review" />
+              <StatCard icon={Star} iconColor="text-gold" value={stats.masteredWords} label="Mastered" />
+              <StatCard icon={CheckCircle} iconColor="text-success" value={stats.reviewedToday} label="Reviewed Today" />
+            </div>
+
+            {/* Practice Options */}
+            <div className="grid gap-4 mb-6">
+              <PracticeModeCard
+                title="Review Due Words"
+                description="Practice words that are due for review"
+                count={stats.dueWords}
+                onClick={() => handleStartPractice('review')}
+                disabled={stats.dueWords === 0}
+              />
+              <PracticeModeCard
+                title="Learn New Words"
+                description="Add 10 new words to your vocabulary"
+                count={Math.min(stats.newWords, 10)}
+                onClick={() => handleStartPractice('new')}
+                disabled={stats.newWords === 0}
+              />
+            </div>
+
+            {/* Category Grid */}
+            <div className="card p-5">
+              <h2 className="text-text-primary font-semibold mb-4">Practice by Category</h2>
+              <div className="grid grid-cols-3 gap-3">
+                {(Object.keys(CATEGORY_INFO) as VocabularyCategory[]).map((category) => {
+                  const info = CATEGORY_INFO[category]
+                  const categoryWords = getWordsByCategory(category)
+                  return (
+                    <button
+                      key={category}
+                      onClick={() => handleStartPractice('category', category)}
+                      disabled={categoryWords.length === 0}
+                      className={`p-4 rounded-xl text-center transition-all border ${
+                        categoryWords.length === 0
+                          ? 'bg-elevated border-border opacity-50 cursor-not-allowed'
+                          : 'bg-surface border-border hover:border-border-hover'
+                      }`}
+                    >
+                      <div className="text-2xl mb-2">{info.icon}</div>
+                      <div className="text-xs font-medium text-text-primary mb-0.5">{info.name}</div>
+                      <div className="text-xs text-text-muted">{categoryWords.length}</div>
+                    </button>
+                  )
+                })}
               </div>
+            </div>
+          </>
+        )}
 
-              {/* Practice Options */}
-              <div className="grid md:grid-cols-2 gap-6 mb-8">
-                {/* Review Due Words */}
-                <PracticeModeCard
-                  icon="🔴"
-                  title="Review Due Words"
-                  description="Practice words that are due for review"
-                  count={stats.dueWords}
-                  gradient="from-red-500 to-red-600"
-                  onClick={() => handleStartPractice('review')}
-                  disabled={stats.dueWords === 0}
-                />
-
-                {/* Learn New Words */}
-                <PracticeModeCard
-                  icon="✨"
-                  title="Learn New Words"
-                  description="Add 10 new words to your vocabulary"
-                  count={Math.min(stats.newWords, 10)}
-                  gradient="from-green-500 to-green-600"
-                  onClick={() => handleStartPractice('new')}
-                  disabled={stats.newWords === 0}
-                />
-              </div>
-
-              {/* Practice by Category */}
-              <div className="bg-zinc-900 border border-zinc-700 rounded-2xl p-6">
-                <h2 className="text-xl font-bold text-white mb-4">
-                  Practice by Category
-                </h2>
-                <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-                  {(Object.keys(CATEGORY_INFO) as VocabularyCategory[]).map((category) => {
-                    const info = CATEGORY_INFO[category]
-                    const categoryWords = getWordsByCategory(category)
-                    return (
-                      <button
-                        key={category}
-                        onClick={() => handleStartPractice('category', category)}
-                        disabled={categoryWords.length === 0}
-                        className={`p-4 rounded-xl text-center transition-all ${
-                          categoryWords.length === 0
-                            ? 'bg-zinc-800 opacity-50 cursor-not-allowed'
-                            : 'bg-gradient-to-br ' + info.color + ' hover:scale-105 shadow-lg'
-                        }`}
-                      >
-                        <div className="text-3xl mb-2">{info.icon}</div>
-                        <div className="text-xs font-medium text-white mb-1">{info.name}</div>
-                        <div className="text-xs text-white/80">{categoryWords.length} words</div>
-                      </button>
-                    )
-                  })}
-                </div>
-              </div>
-            </motion.div>
-          )}
-
-          {view === 'practice' && (
-            <motion.div
-              key="practice"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
+        {view === 'practice' && (
+          <>
+            {/* Back Button */}
+            <button
+              onClick={() => setView('selection')}
+              className="flex items-center gap-1.5 text-text-muted hover:text-text-secondary mb-6 transition-colors"
             >
-              {/* Back Button */}
-              <button
-                onClick={() => setView('selection')}
-                className="flex items-center gap-2 text-zinc-400 hover:text-white mb-6"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M15 19l-7-7 7-7"
-                  />
-                </svg>
-                Back to Practice Options
-              </button>
+              <ChevronLeft className="w-4 h-4" />
+              <span className="text-sm">Back to Practice Options</span>
+            </button>
 
-              {practiceWords.length > 0 ? (
-                <FlashcardDeck words={practiceWords} onComplete={handleCompletePractice} />
-              ) : (
-                <div className="text-center py-12">
-                  <div className="text-6xl mb-4">🎉</div>
-                  <h2 className="text-2xl font-bold text-white mb-2">
-                    No words available
-                  </h2>
-                  <p className="text-zinc-400 mb-4">
-                    Try a different practice mode or category
-                  </p>
-                  <button
-                    onClick={() => setView('selection')}
-                    className="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-semibold"
-                  >
-                    Back to Practice Options
-                  </button>
-                </div>
-              )}
-            </motion.div>
-          )}
+            {practiceWords.length > 0 ? (
+              <FlashcardDeck words={practiceWords} onComplete={handleCompletePractice} />
+            ) : (
+              <div className="card p-8 text-center">
+                <div className="text-5xl mb-4">🎉</div>
+                <h2 className="text-text-primary text-xl font-bold mb-2">No words available</h2>
+                <p className="text-text-muted text-sm mb-6">Try a different practice mode or category</p>
+                <button
+                  onClick={() => setView('selection')}
+                  className="btn btn-primary btn-md"
+                >
+                  Back to Practice Options
+                </button>
+              </div>
+            )}
+          </>
+        )}
 
-          {view === 'browse' && (
-            <motion.div
-              key="browse"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-            >
-              <VocabularyList onAddWord={() => setIsAddModalOpen(true)} />
-            </motion.div>
-          )}
-        </AnimatePresence>
+        {view === 'browse' && (
+          <VocabularyList onAddWord={() => setIsAddModalOpen(true)} />
+        )}
 
         {/* Session Summary Modal */}
         {showSessionSummary && currentSession && (
@@ -265,77 +196,61 @@ export default function PracticePage() {
 }
 
 function StatCard({
-  icon,
-  label,
+  icon: Icon,
+  iconColor,
   value,
-  color,
+  label,
 }: {
-  icon: string
-  label: string
+  icon: React.ElementType
+  iconColor: string
   value: number
-  color: string
+  label: string
 }) {
   return (
-    <motion.div
-      whileHover={{ scale: 1.05 }}
-      className={`bg-gradient-to-br ${color} rounded-2xl p-6 shadow-lg text-white`}
-    >
-      <div className="text-3xl mb-2">{icon}</div>
-      <div className="text-3xl font-bold mb-1">{value}</div>
-      <div className="text-sm text-white/80">{label}</div>
-    </motion.div>
+    <div className="stat-card">
+      <div className="flex items-center gap-2 mb-2">
+        <Icon className={`w-5 h-5 ${iconColor}`} />
+      </div>
+      <div className="stat-value">{value}</div>
+      <div className="stat-label">{label}</div>
+    </div>
   )
 }
 
 function PracticeModeCard({
-  icon,
   title,
   description,
   count,
-  gradient,
   onClick,
   disabled,
 }: {
-  icon: string
   title: string
   description: string
   count: number
-  gradient: string
   onClick: () => void
   disabled?: boolean
 }) {
   return (
-    <motion.button
-      whileHover={{ scale: disabled ? 1 : 1.02 }}
-      whileTap={{ scale: disabled ? 1 : 0.98 }}
+    <button
       onClick={onClick}
       disabled={disabled}
-      className={`bg-zinc-900 border border-zinc-700 rounded-2xl p-6 text-left transition-all ${
-        disabled ? 'opacity-50 cursor-not-allowed' : 'hover:border-zinc-600 hover:bg-zinc-800'
+      className={`card p-5 text-left transition-all ${
+        disabled ? 'opacity-50 cursor-not-allowed' : 'hover:border-border-hover'
       }`}
     >
-      <div className={`inline-block p-4 rounded-2xl bg-gradient-to-br ${gradient} mb-4`}>
-        <span className="text-4xl">{icon}</span>
-      </div>
-      <h3 className="text-xl font-bold text-white mb-2">{title}</h3>
-      <p className="text-zinc-400 mb-4">{description}</p>
       <div className="flex items-center justify-between">
-        <span className="text-2xl font-bold text-white">{count} words</span>
+        <div className="flex-1">
+          <h3 className="text-text-primary font-semibold mb-1">{title}</h3>
+          <p className="text-text-muted text-sm mb-2">{description}</p>
+          <span className="text-text-secondary text-lg font-bold">{count} words</span>
+        </div>
         {!disabled && (
-          <div className="flex items-center gap-2 text-indigo-400 font-semibold">
-            Start
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M13 7l5 5m0 0l-5 5m5-5H6"
-              />
-            </svg>
+          <div className="flex items-center text-primary">
+            <ChevronRight className="w-5 h-5" />
           </div>
         )}
       </div>
-    </motion.button>
+    </button>
   )
 }
 
@@ -352,61 +267,52 @@ function SessionSummaryModal({
 
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+      <div
+        className="absolute inset-0 bg-black/80 backdrop-blur-sm"
         onClick={onClose}
       />
 
-      <motion.div
-        initial={{ opacity: 0, scale: 0.9, y: 20 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        className="relative bg-zinc-900 border border-zinc-700 rounded-2xl shadow-2xl max-w-md w-full p-8 text-center"
-      >
-        <div className="text-6xl mb-4">🎉</div>
-        <h2 className="text-3xl font-bold text-white mb-2">
-          Session Complete!
-        </h2>
-        <p className="text-zinc-400 mb-6">Great job practicing!</p>
+      <div className="relative bg-surface border border-border rounded-xl shadow-2xl max-w-sm w-full p-6 text-center">
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 text-text-muted hover:text-text-secondary transition-colors"
+        >
+          <X className="w-5 h-5" />
+        </button>
 
-        <div className="grid grid-cols-2 gap-4 mb-6">
-          <div className="bg-blue-500/20 rounded-xl p-4">
-            <div className="text-3xl font-bold text-blue-400">
-              {session.wordsReviewed}
-            </div>
-            <div className="text-sm text-zinc-400">Words Reviewed</div>
+        <div className="text-5xl mb-4">🎉</div>
+        <h2 className="text-text-primary text-xl font-bold mb-1">Session Complete!</h2>
+        <p className="text-text-muted text-sm mb-6">Great job practicing!</p>
+
+        <div className="grid grid-cols-2 gap-3 mb-6">
+          <div className="bg-primary/10 border border-primary/20 rounded-xl p-4">
+            <div className="text-2xl font-bold text-primary">{session.wordsReviewed}</div>
+            <div className="text-xs text-text-muted">Words Reviewed</div>
           </div>
 
-          <div className="bg-green-500/20 rounded-xl p-4">
-            <div className="text-3xl font-bold text-green-400">
-              {accuracy}%
-            </div>
-            <div className="text-sm text-zinc-400">Accuracy</div>
+          <div className="bg-success/10 border border-success/20 rounded-xl p-4">
+            <div className="text-2xl font-bold text-success">{accuracy}%</div>
+            <div className="text-xs text-text-muted">Accuracy</div>
           </div>
 
-          <div className="bg-purple-500/20 rounded-xl p-4">
-            <div className="text-3xl font-bold text-purple-400">
-              +{session.xpEarned}
-            </div>
-            <div className="text-sm text-zinc-400">XP Earned</div>
+          <div className="bg-gold/10 border border-gold/20 rounded-xl p-4">
+            <div className="text-2xl font-bold text-gold">+{session.xpEarned}</div>
+            <div className="text-xs text-text-muted">XP Earned</div>
           </div>
 
-          <div className="bg-yellow-500/20 rounded-xl p-4">
-            <div className="text-3xl font-bold text-yellow-400">
-              {session.correctAnswers}/{session.wordsReviewed}
-            </div>
-            <div className="text-sm text-zinc-400">Correct</div>
+          <div className="bg-elevated border border-border rounded-xl p-4">
+            <div className="text-2xl font-bold text-text-primary">{session.correctAnswers}/{session.wordsReviewed}</div>
+            <div className="text-xs text-text-muted">Correct</div>
           </div>
         </div>
 
         <button
           onClick={onClose}
-          className="w-full px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-semibold transition-colors"
+          className="w-full btn btn-primary btn-md"
         >
           Continue
         </button>
-      </motion.div>
+      </div>
     </div>
   )
 }
