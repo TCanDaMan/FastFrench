@@ -13,7 +13,7 @@ export default function HomePage() {
   const dailyGoal = profile?.daily_xp_goal || 20
 
   return (
-    <div className="min-h-screen w-full bg-zinc-950 text-white pb-24 pt-20 lg:pt-24">
+    <div className="min-h-screen w-full bg-zinc-950 text-white" style={{ paddingBottom: '6rem', paddingTop: '5rem' }}>
       <div className="max-w-xl px-4" style={{ marginInline: 'auto' }}>
 
         {/* Welcome Header */}
