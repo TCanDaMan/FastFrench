@@ -13,9 +13,9 @@ export default function HomePage() {
   const dailyGoal = profile?.daily_xp_goal || 20
 
   return (
-    <div className="min-h-screen bg-black text-white pb-28 pt-20 lg:pt-24">
+    <div className="min-h-screen w-full bg-black text-white pb-28 pt-20 lg:pt-24">
       {/* Hero Banner */}
-      <div className="max-w-4xl mx-auto px-4">
+      <div className="max-w-4xl px-4" style={{ marginInline: 'auto' }}>
         <div className="bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 rounded-3xl overflow-hidden shadow-2xl">
           <div className="px-6 py-8 lg:py-10">
           <motion.div
@@ -66,7 +66,7 @@ export default function HomePage() {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-4xl mx-auto px-4 mt-8">
+      <div className="max-w-4xl px-4 mt-8" style={{ marginInline: 'auto' }}>
         {/* Paris Countdown Card */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
